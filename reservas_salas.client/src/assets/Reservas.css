@@ -1,0 +1,74 @@
+/* === Tarjeta de reserva general === */
+.reserva-card {
+  background-color: #0b132b; /* Azul oscuro elegante */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+/* Hover general */
+.reserva-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Cuando está activa (expandida) */
+.reserva-card.active {
+  border-color: #00b4d8;
+  background-color: #1d3557;
+  box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+}
+
+/* === Estados === */
+.reserva-card .badge {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+}
+
+/* Cancelada visualmente */
+.reserva-card.bg-secondary {
+  opacity: 0.75;
+  border-color: rgba(255, 0, 0, 0.3);
+}
+
+.reserva-card.bg-secondary:hover {
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* === Sección expandible === */
+.expand-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.expand-section.show {
+  max-height: 200px;
+  margin-top: 0.5rem;
+}
+
+/* === Botones === */
+.btn-outline-danger {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+  background-color: #e63946;
+  color: white;
+}
+
+/* === Texto general === */
+.text-info {
+  color: #00b4d8 !important;
+}
+
+.text-muted {
+  color: #adb5bd !important;
+}
