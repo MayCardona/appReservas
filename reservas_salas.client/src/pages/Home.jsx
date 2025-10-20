@@ -161,7 +161,7 @@ export default function Home() {
       if (result.success) {
         await Swal.fire("Reserva creada correctamente", "", "success");
 
-        // 🔄 Recargar reservas actualizadas
+        // Recargar reservas actualizadas
         const nuevasReservas = await getReservasPorSalaYFecha(
           salaSeleccionada,
           fechaSeleccionada
@@ -180,7 +180,6 @@ export default function Home() {
     }
   };
 
-  // ✅ Render
   return (
     <div className="home-wrapper container-fluid py-4 px-5">
       <div className="d-flex justify-content-between align-items-center mb-4">

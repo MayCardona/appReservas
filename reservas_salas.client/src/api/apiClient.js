@@ -117,7 +117,7 @@ export async function getReservasByEmpleado(idEmpleado) {
     const response = await fetch(`${API_URL}/api/TReservas/employee-id/${idEmpleado}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // si usas cookies o autenticación por sesión
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -140,7 +140,7 @@ export async function eliminarReserva(idReserva) {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
-        IdReserva: idReserva, // importante: mayúscula como en tu DTO
+        IdReserva: idReserva,
         Estado: 0,            
       }),
     });

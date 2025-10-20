@@ -14,7 +14,7 @@
 }
 
 .nav-link:hover {
-  color: #a7c7ff !important; /* tono claro para hover */
+  color: #a7c7ff !important; 
   text-decoration: underline;
 }
 
@@ -34,7 +34,7 @@
 }
 
 .navbar-brand img {
-  filter: brightness(0) invert(1); /* Para que el logo blanco resalte en azul */
+  filter: brightness(0) invert(1);
 }
 
 .btn-outline-light:hover {

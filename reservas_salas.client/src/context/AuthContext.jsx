@@ -30,8 +30,8 @@ export function AuthProvider({ children }) {
         user,
         login,
         logout,
-        reservasActualizadas,      // 👈 compartido globalmente
-        setReservasActualizadas,   // 👈 función para actualizarlo
+        reservasActualizadas,     
+        setReservasActualizadas, 
       }}
     >
       {children}

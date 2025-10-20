@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { getSecureItem } from "../utils/secureStorage";
 import { getReservasByEmpleado, eliminarReserva } from "../api/apiClient";
-import { useAuth } from "../context/AuthContext"; // 👈 NUEVO IMPORT
+import { useAuth } from "../context/AuthContext"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../assets/Reservas.css";
 
 export default function MisReservas() {
   const [reservas, setReservas] = useState([]);
   const [reservaActiva, setReservaActiva] = useState(null);
-  const { setReservasActualizadas } = useAuth(); // 👈 NUEVO
+  const { setReservasActualizadas } = useAuth();
 
   useEffect(() => {
     const fetchReservas = async () => {
@@ -53,7 +53,6 @@ export default function MisReservas() {
         )
       );
 
-      // 👇 Notifica al Home que se debe refrescar
       setReservasActualizadas(true);
 
       setReservaActiva(null);

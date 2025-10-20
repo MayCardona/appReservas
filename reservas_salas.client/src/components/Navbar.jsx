@@ -53,7 +53,7 @@ export default function Navbar() {
             </li>
           </ul>
 
-          {/* Usuario + Cerrar sesión */}
+          {/* Usuario - Cerrar sesión */}
           {user && (
             <>
               <div className="d-lg-none text-light mb-2 d-flex align-items-center justify-content-between border-top pt-2">

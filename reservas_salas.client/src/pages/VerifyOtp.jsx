@@ -11,7 +11,7 @@ export default function VerifyOtp() {
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
 
-  // Verificamos que se haya pasado la identificación
+  
   useEffect(() => {
     if (!state?.identificacion) {
       navigate("/login");
