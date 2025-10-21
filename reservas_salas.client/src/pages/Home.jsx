@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../assets/Home.css";
-
 import {
   getSalas,
   getReservasPorSalaYFecha,
   crearReserva,
 } from "../api/apiClient";
 import { getSecureItem } from "../utils/secureStorage";
-import { useAuth } from "../context/AuthContext"; 
+import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
   const [salas, setSalas] = useState([]);
@@ -18,10 +17,11 @@ export default function Home() {
     new Date().toISOString().split("T")[0]
   );
   const [reservas, setReservas] = useState([]);
+  const [bloquesSeleccionados, setBloquesSeleccionados] = useState([]);
 
   const { reservasActualizadas, setReservasActualizadas } = useAuth();
 
-  //Cargar salas
+  // Cargar salas
   useEffect(() => {
     const cargarSalas = async () => {
       try {
@@ -34,9 +34,9 @@ export default function Home() {
     cargarSalas();
   }, []);
 
-  //Cargar reservas según sala y fecha seleccionadas
+  // Cargar reservas según sala y fecha seleccionadas
   useEffect(() => {
-    if (!salaSeleccionada || salaSeleccionada === "null") return;
+    if (!salaSeleccionada) return;
 
     const cargarReservas = async () => {
       try {
@@ -47,7 +47,7 @@ export default function Home() {
         setReservas(data);
       } catch (err) {
         console.error(
-          `Error al obtener reservas para sala ${salaSeleccionada} y fecha ${fechaSeleccionada}:`,
+          `Error al obtener reservas para sala ${salaSeleccionada}:`,
           err?.message || err
         );
       }
@@ -56,49 +56,36 @@ export default function Home() {
     cargarReservas();
   }, [salaSeleccionada, fechaSeleccionada]);
 
-  // Escuchar si se canceló una reserva en MisReservas
+  // Refrescar si hay cambios desde MisReservas
   useEffect(() => {
     if (reservasActualizadas) {
-      const actualizarReservas = async () => {
+      (async () => {
         if (salaSeleccionada) {
-          try {
-            const data = await getReservasPorSalaYFecha(
-              salaSeleccionada,
-              fechaSeleccionada
-            );
-            setReservas(data);
-          } catch (error) {
-            console.error("Error al refrescar reservas:", error);
-          }
+          const data = await getReservasPorSalaYFecha(
+            salaSeleccionada,
+            fechaSeleccionada
+          );
+          setReservas(data);
         }
         setReservasActualizadas(false);
-      };
-
-      actualizarReservas();
+      })();
     }
   }, [reservasActualizadas]);
 
-  // Generar bloques de horarios (08:00 - 18:00)
+  // Generar bloques de horarios
   const generarBloques = () => {
     const bloques = [];
     const ahora = new Date();
 
     for (let hora = 8; hora < 18; hora++) {
-      const inicio = new Date(
-        `${fechaSeleccionada}T${hora.toString().padStart(2, "0")}:00:00`
-      );
+      const inicio = new Date(`${fechaSeleccionada}T${hora.toString().padStart(2, "0")}:00:00`);
       const fin = new Date(inicio.getTime() + 60 * 60 * 1000);
 
       const ocupado = reservas.some((r) => {
-        if (r.estado === 0) return false; 
+        if (r.estado === 0) return false;
         const fi = new Date(r.fechaInicio);
         const ff = new Date(r.fechaFin);
-
-        return (
-          fi.toDateString() === inicio.toDateString() &&
-          inicio < ff &&
-          fin > fi
-        );
+        return fi.toDateString() === inicio.toDateString() && inicio < ff && fin > fi;
       });
 
       const pasado = inicio < ahora;
@@ -107,6 +94,7 @@ export default function Home() {
         label: `${hora.toString().padStart(2, "0")}:00 — ${(hora + 1)
           .toString()
           .padStart(2, "0")}:00`,
+        horaInicio: hora,
         ocupado,
         pasado,
       });
@@ -115,32 +103,52 @@ export default function Home() {
     return bloques;
   };
 
-  //Crear reserva
-  const handleReservar = async (horaInicio) => {
+  // Seleccionar / deseleccionar bloques
+  const handleSeleccionBloque = (hora) => {
+    const bloques = generarBloques();
+    const bloque = bloques.find((b) => b.horaInicio === hora);
+
+    if (bloque.ocupado || bloque.pasado) return;
+
+    setBloquesSeleccionados((prev) => {
+      if (prev.includes(hora)) {
+        return prev.filter((h) => h !== hora);
+      } else {
+        return [...prev, hora].sort((a, b) => a - b);
+      }
+    });
+  };
+
+  // Crear reserva (para múltiples bloques)
+  const handleReservar = async () => {
     if (!salaSeleccionada)
       return Swal.fire("Selecciona una sala primero", "", "warning");
 
-    const fechaInicioLocal = `${fechaSeleccionada}T${horaInicio}:00`;
-    const ahora = new Date();
+    if (bloquesSeleccionados.length === 0)
+      return Swal.fire("Selecciona al menos un bloque", "", "warning");
 
-    if (new Date(fechaInicioLocal) < ahora) {
-      return Swal.fire("No puedes reservar un horario pasado", "", "error");
-    }
+    // Calcular hora de inicio y fin
+    const horaInicio = Math.min(...bloquesSeleccionados);
+    const horaFin = Math.max(...bloquesSeleccionados) + 1;
+
+    const fechaInicio = `${fechaSeleccionada}T${horaInicio
+      .toString()
+      .padStart(2, "0")}:00:00`;
+    const fechaFin = `${fechaSeleccionada}T${horaFin
+      .toString()
+      .padStart(2, "0")}:00:00`;
 
     const user = getSecureItem("user");
     if (!user) return Swal.fire("Usuario no autenticado", "", "error");
-
     const idEmpleado = user.id || user.IdEmpleado || user.Id;
-    if (!idEmpleado)
-      return Swal.fire("Falta el ID de empleado", "", "error");
 
     const salaNombre =
       salas.find((s) => s.idSala === salaSeleccionada)?.salas ||
       salaSeleccionada;
 
     const confirm = await Swal.fire({
-      title: "¿Confirmar reserva?",
-      text: `Sala ${salaNombre} a las ${horaInicio}`,
+      title: "Confirmar reserva",
+      text: `Sala ${salaNombre} desde ${horaInicio}:00 hasta ${horaFin}:00`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Sí, reservar",
@@ -156,28 +164,25 @@ export default function Home() {
       const result = await crearReserva({
         idSala: salaSeleccionada,
         idEmpleado,
-        fechaInicio: fechaInicioLocal,
+        fechaInicio,
+        fechaFin,
+        Estado: 1,
       });
 
       if (result.success) {
         await Swal.fire("Reserva creada correctamente", "", "success");
-
-        // Recargar reservas actualizadas
+        setBloquesSeleccionados([]);
         const nuevasReservas = await getReservasPorSalaYFecha(
           salaSeleccionada,
           fechaSeleccionada
         );
         setReservas(nuevasReservas);
       } else {
-        await Swal.fire(
-          "Error al crear reserva",
-          result.message || "Ocurrió un error desconocido",
-          "error"
-        );
+        await Swal.fire("Error", result.message, "error");
       }
     } catch (error) {
       console.error("Error en handleReservar:", error);
-      await Swal.fire("Error inesperado", error.message || "", "error");
+      Swal.fire("Error inesperado", error.message, "error");
     }
   };
 
@@ -194,7 +199,7 @@ export default function Home() {
       </div>
 
       <div className="row">
-        {/* Panel izquierdo - Salas */}
+        {/* Panel de salas */}
         <div className="col-md-3">
           <div className="panel p-3 mb-4">
             <h5 className="mb-3 text-info">Salas disponibles</h5>
@@ -205,7 +210,10 @@ export default function Home() {
                   className={`list-group-item list-group-item-action ${
                     salaSeleccionada === s.idSala ? "active-sala" : ""
                   }`}
-                  onClick={() => setSalaSeleccionada(s.idSala)}
+                  onClick={() => {
+                    setSalaSeleccionada(s.idSala);
+                    setBloquesSeleccionados([]);
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   <i className="bi bi-door-open me-2"></i> {s.salas}
@@ -215,7 +223,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Panel derecho - Horarios */}
+        {/* Panel de horarios */}
         <div className="col-md-9">
           <div className="panel p-4">
             <h4 className="text-center text-light text-info mb-4">
@@ -236,13 +244,11 @@ export default function Home() {
                         ? "ocupado"
                         : b.pasado
                         ? "pasado"
+                        : bloquesSeleccionados.includes(b.horaInicio)
+                        ? "seleccionado"
                         : "disponible"
                     }`}
-                    onClick={() =>
-                      !b.ocupado &&
-                      !b.pasado &&
-                      handleReservar(b.label.split(" — ")[0])
-                    }
+                    onClick={() => handleSeleccionBloque(b.horaInicio)}
                   >
                     <span className="hora">{b.label}</span>
                     <span className="estado">
@@ -250,6 +256,8 @@ export default function Home() {
                         ? "Ocupado"
                         : b.pasado
                         ? "Pasado"
+                        : bloquesSeleccionados.includes(b.horaInicio)
+                        ? "Seleccionado"
                         : "Disponible"}
                     </span>
                   </div>
@@ -260,6 +268,18 @@ export default function Home() {
                 </p>
               )}
             </div>
+
+            {bloquesSeleccionados.length > 0 && (
+              <div className="text-center mt-4">
+                <button
+                  className="btn btn-success px-4 py-2"
+                  onClick={handleReservar}
+                >
+                  Confirmar reserva ({bloquesSeleccionados.length} hora
+                  {bloquesSeleccionados.length > 1 ? "s" : ""})
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

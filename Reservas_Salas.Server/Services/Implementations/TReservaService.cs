@@ -63,7 +63,7 @@ namespace Reservas_Salas.Server.Services.Implementations
 
             // Si la fecha fin no viene, asumimos que dura 1 hora
             if (reserva.FechaFin == default || reserva.FechaFin <= reserva.FechaInicio)
-                reserva.FechaFin = reserva.FechaInicio.AddHours(1);
+                reserva.FechaFin = reserva.FechaFin;
 
             var sala = await _context.TSalas.FindAsync(reserva.IdSala);
             if (sala == null)

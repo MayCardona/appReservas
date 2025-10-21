@@ -73,7 +73,7 @@ namespace Reservas_Salas.Server.Controllers
                 IdSala = dto.IdSala,
                 IdEmpleado = dto.IdEmpleado,
                 FechaInicio = dto.FechaInicio,
-                //FechaFin = dto.FechaFin,
+                FechaFin = dto.FechaFin,
                 Estado = dto.Estado
             };
 
