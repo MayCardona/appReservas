@@ -90,6 +90,7 @@ export default function Home() {
       const fin = new Date(inicio.getTime() + 60 * 60 * 1000);
 
       const ocupado = reservas.some((r) => {
+        if (r.estado === 0) return false; 
         const fi = new Date(r.fechaInicio);
         const ff = new Date(r.fechaFin);
 

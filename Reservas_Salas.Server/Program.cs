@@ -18,7 +18,9 @@ builder.Services.AddCors(options =>
             "http://localhost:5173",   // Vite (frontend React)
             "https://localhost:5173",  // versión HTTPS por si acaso
             "http://localhost:57696",  // tu antiguo frontend (opcional)
-            "https://localhost:57696"
+            "https://localhost:57696",
+            "http://localhost:57697",  // tu antiguo frontend (opcional)
+            "https://localhost:57697"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()

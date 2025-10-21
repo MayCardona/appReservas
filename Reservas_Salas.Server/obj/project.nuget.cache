@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "pWO5a8fDkGY=",
+  "dgSpecHash": "r7Ky535lB+k=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Maycol Cardona\\Desktop\\Reservas_Salas\\Reservas_Salas.Server\\Reservas_Salas.Server.csproj",
+  "projectFilePath": "C:\\Users\\Maycol Cardona\\Desktop\\appReservas\\Reservas_Salas.Server\\Reservas_Salas.Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Maycol Cardona\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Maycol Cardona\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

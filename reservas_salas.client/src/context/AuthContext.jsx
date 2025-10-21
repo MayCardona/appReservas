@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => getSecureItem("user"));
-  const [reservasActualizadas, setReservasActualizadas] = useState(false); // 👈 NUEVO
+  const [reservasActualizadas, setReservasActualizadas] = useState(false); 
 
   const login = (userData) => {
     setUser(userData);
