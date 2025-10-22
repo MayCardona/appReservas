@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Reservas_Salas.Server.Models;
@@ -18,7 +19,7 @@ public partial class TCargo
 
     public int IdArea { get; set; }
 
-
+    [JsonIgnore]
     [InverseProperty("CargoNavigation")]
     public virtual ICollection<TEmpleado> TEmpleados { get; set; } = new List<TEmpleado>();
 }

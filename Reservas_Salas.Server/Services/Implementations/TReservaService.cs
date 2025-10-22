@@ -39,7 +39,7 @@ namespace Reservas_Salas.Server.Services.Implementations
                         FechaInicio = reserva.FechaInicio,
                         FechaFin = reserva.FechaFin,
                         IdSala = sala.IdSala,
-                        NombreSala = sala.Salas, // <-- nombre del campo en tu tabla de salas
+                        NombreSala = sala.Salas,
                         Estado = reserva.Estado
                     }
                 )
@@ -51,6 +51,9 @@ namespace Reservas_Salas.Server.Services.Implementations
         public async Task<IEnumerable<TReserva>> GetReservasPorSalaYFechaAsync(long idSala, DateTime fecha)
         {
             return await _context.TReservas
+                .Include(r => r.IdEmpleadoNavigation)
+                    .ThenInclude(e => e.CargoNavigation)
+                 .Include(r => r.IdSalaNavigation)
                  .Where(r => r.IdSala == idSala && r.FechaInicio.Date == fecha.Date)
                  .OrderBy(r => r.FechaInicio)
                  .ToListAsync();

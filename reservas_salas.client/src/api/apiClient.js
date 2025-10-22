@@ -42,6 +42,22 @@ export async function bringEmployeeName(id) {
   return name;
 }
 
+export async function bringEmployeeCharge(id){
+  const response = await fetch(`${API_URL}/api/Cargo`,{
+    method: "POST",
+    headers: { "Content-Type" : "application/json"},
+    body: JSON.stringify({IdEmpleado: id})
+  });
+
+  if(!response.ok){
+    const error = await response.text();
+    throw new Error(`Error al traer el cargo del empleado: ${error}`)
+  }
+
+  const cargo = await response.text();
+  return cargo;
+}
+
 
 
 // Obtener todas las salas disponibles

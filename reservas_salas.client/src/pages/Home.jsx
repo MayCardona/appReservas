@@ -19,9 +19,9 @@ export default function Home() {
   const [reservas, setReservas] = useState([]);
   const [bloquesSeleccionados, setBloquesSeleccionados] = useState([]);
 
-  const { reservasActualizadas, setReservasActualizadas } = useAuth();
+  const { reservasActualizadas } = useAuth();
 
-  // Cargar salas
+  //Cargar salas disponibles
   useEffect(() => {
     const cargarSalas = async () => {
       try {
@@ -34,7 +34,7 @@ export default function Home() {
     cargarSalas();
   }, []);
 
-  // Cargar reservas según sala y fecha seleccionadas
+  //Cargar reservas por sala y fecha
   useEffect(() => {
     if (!salaSeleccionada) return;
 
@@ -56,54 +56,75 @@ export default function Home() {
     cargarReservas();
   }, [salaSeleccionada, fechaSeleccionada]);
 
-  // Refrescar si hay cambios desde MisReservas
+  //Refrescar cuando cambien reservas desde MisReservas
   useEffect(() => {
-    if (reservasActualizadas) {
-      (async () => {
-        if (salaSeleccionada) {
-          const data = await getReservasPorSalaYFecha(
-            salaSeleccionada,
-            fechaSeleccionada
-          );
-          setReservas(data);
-        }
-        setReservasActualizadas(false);
-      })();
-    }
-  }, [reservasActualizadas]);
+    const refrescarReservas = async () => {
+      if (!salaSeleccionada) return;
+      try {
+        const data = await getReservasPorSalaYFecha(
+          salaSeleccionada,
+          fechaSeleccionada
+        );
+        setReservas(data);
+      } catch (err) {
+        console.error("Error al refrescar reservas:", err);
+      }
+    };
 
-  // Generar bloques de horarios
+    refrescarReservas();
+  }, [reservasActualizadas, salaSeleccionada, fechaSeleccionada]);
+
+  //Generar bloques horarios (8am a 6pm)
   const generarBloques = () => {
     const bloques = [];
     const ahora = new Date();
 
-    for (let hora = 8; hora < 18; hora++) {
-      const inicio = new Date(`${fechaSeleccionada}T${hora.toString().padStart(2, "0")}:00:00`);
-      const fin = new Date(inicio.getTime() + 60 * 60 * 1000);
+    //Desde 8:00 hasta 18:00 en intervalos de 30 minutos
+    for (let hora = 8; hora < 18; hora += 0.5) {
+      const horaEntera = Math.floor(hora);
+      const minutos = hora % 1 === 0 ? "00" : "30";
 
-      const ocupado = reservas.some((r) => {
-        if (r.estado === 0) return false;
+      const inicio = new Date(`${fechaSeleccionada}T${horaEntera
+        .toString()
+        .padStart(2, "0")}:${minutos}:00`);
+      const fin = new Date(inicio.getTime() + 30 * 60 * 1000); // 30 minutos
+
+      //Buscar si hay una reserva activa (estado != 0)
+      const reservaBloque = reservas.find((r) => {
+        if (r.estado === 0) return false; // Ignorar canceladas
+
         const fi = new Date(r.fechaInicio);
         const ff = new Date(r.fechaFin);
-        return fi.toDateString() === inicio.toDateString() && inicio < ff && fin > fi;
+
+        return (
+          fi.toDateString() === inicio.toDateString() &&
+          inicio < ff &&
+          fin > fi
+        );
       });
 
+      const ocupado = !!reservaBloque;
       const pasado = inicio < ahora;
 
+      const label = `${inicio
+        .toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} — ${fin.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`;
+
       bloques.push({
-        label: `${hora.toString().padStart(2, "0")}:00 — ${(hora + 1)
-          .toString()
-          .padStart(2, "0")}:00`,
-        horaInicio: hora,
+        label,
+        horaInicio: inicio,
         ocupado,
         pasado,
+        reserva: reservaBloque || null,
       });
     }
 
     return bloques;
   };
 
-  // Seleccionar / deseleccionar bloques
+  //Seleccionar o deseleccionar bloques
   const handleSeleccionBloque = (hora) => {
     const bloques = generarBloques();
     const bloque = bloques.find((b) => b.horaInicio === hora);
@@ -119,7 +140,7 @@ export default function Home() {
     });
   };
 
-  // Crear reserva (para múltiples bloques)
+  //Crear reserva (múltiples bloques)
   const handleReservar = async () => {
     if (!salaSeleccionada)
       return Swal.fire("Selecciona una sala primero", "", "warning");
@@ -186,6 +207,7 @@ export default function Home() {
     }
   };
 
+  //Render principal
   return (
     <div className="home-wrapper container-fluid py-4 px-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -251,14 +273,25 @@ export default function Home() {
                     onClick={() => handleSeleccionBloque(b.horaInicio)}
                   >
                     <span className="hora">{b.label}</span>
+
+                    {/* Mostrar info de la reserva */}
                     <span className="estado">
-                      {b.ocupado
-                        ? "Ocupado"
-                        : b.pasado
-                        ? "Pasado"
-                        : bloquesSeleccionados.includes(b.horaInicio)
-                        ? "Seleccionado"
-                        : "Disponible"}
+                      {b.ocupado ? (
+                        <>
+                          <i className="bi bi-person-fill me-1"></i>
+                          <small>
+                            {b.reserva?.idEmpleado
+                              ? `${b.reserva.idEmpleadoNavigation.nombre} ${b.reserva.idEmpleadoNavigation.apellido} (${b.reserva.idEmpleadoNavigation.cargoNavigation.cargo})`
+                              : "Ocupado"}
+                          </small>
+                        </>
+                      ) : b.pasado ? (
+                        "Pasado"
+                      ) : bloquesSeleccionados.includes(b.horaInicio) ? (
+                        "Seleccionado"
+                      ) : (
+                        "Disponible"
+                      )}
                     </span>
                   </div>
                 ))

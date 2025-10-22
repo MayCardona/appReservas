@@ -4,6 +4,7 @@ using Reservas_Salas.Server.Data;
 using Reservas_Salas.Server.Services;
 using Reservas_Salas.Server.Services.Implementations;
 using Reservas_Salas.Server.Services.Interfaces;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +29,15 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Evita los ciclos infinitos al serializar
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 

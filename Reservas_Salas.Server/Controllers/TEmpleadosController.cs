@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Reservas_Salas.Server.Data;
+using Reservas_Salas.Server.DTOs;
 using Reservas_Salas.Server.Models;
+using Reservas_Salas.Server.Services.Implementations;
 using Reservas_Salas.Server.Services.Interfaces;
 
 namespace Reservas_Salas.Server.Controllers
@@ -36,6 +39,21 @@ namespace Reservas_Salas.Server.Controllers
                 return NotFound();
 
             return Ok(tEmpleado);
+        }
+
+        //Get: api/TEmpleados/Cargo
+        [HttpPost("/api/Cargo/")]
+        public async Task<IActionResult> GetByIdAndCargo([FromBody] OtpRequestDTO dto)
+        {
+            try
+            {
+                var cargo = await _empleadoService.GetByIdAndCargoAsync(dto.IdEmpleado);
+                return Ok(cargo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         

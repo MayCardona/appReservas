@@ -9,7 +9,7 @@ import "../assets/Reservas.css";
 export default function MisReservas() {
   const [reservas, setReservas] = useState([]);
   const [reservaActiva, setReservaActiva] = useState(null);
-  const { setReservasActualizadas } = useAuth();
+  const { notificarCambioReservas } = useAuth();
 
   useEffect(() => {
     const fetchReservas = async () => {
@@ -53,7 +53,7 @@ export default function MisReservas() {
         )
       );
 
-      setReservasActualizadas(true);
+      notificarCambioReservas();
 
       setReservaActiva(null);
     } catch (err) {

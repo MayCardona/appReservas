@@ -17,6 +17,10 @@ export function AuthProvider({ children }) {
     removeSecureItem("user");
   };
 
+  const notificarCambioReservas = () => {
+    setReservasActualizadas((prev) => !prev);
+  };
+
   useEffect(() => {
     const savedUser = getSecureItem("user");
     if (savedUser && !user) {
@@ -31,7 +35,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         reservasActualizadas,     
-        setReservasActualizadas, 
+        notificarCambioReservas, 
       }}
     >
       {children}

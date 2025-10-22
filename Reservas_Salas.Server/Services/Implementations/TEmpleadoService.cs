@@ -24,6 +24,12 @@ namespace Reservas_Salas.Server.Services
             return await _context.TEmpleados.FindAsync(id);
         }
 
+        public async Task<TEmpleado> GetByIdAndCargoAsync(long id)
+        {
+            return await _context.TEmpleados
+                .Include(e => e.CargoNavigation)
+                .FirstOrDefaultAsync(e => e.IdEmpleado == id);
+        }
         public async Task<TEmpleado> CreateAsync(TEmpleado empleado)
         {
             _context.TEmpleados.Add(empleado);
