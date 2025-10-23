@@ -26,7 +26,7 @@ export default function VerifyOtp() {
             if (result.success) {
                 const employeeName = await bringEmployeeName(state.identificacion);
 
-                login({ nombre: employeeName, id: state.identificacion });
+                login({ nombre: employeeName, id: state.identificacion, idCargo: 2});
                 navigate("/");
             } else {
                 setMessage(result.message || "Código incorrecto.");

@@ -3,6 +3,8 @@ using Reservas_Salas.Server.Data;
 using Reservas_Salas.Server.DTOs;
 using Reservas_Salas.Server.Models;
 using Reservas_Salas.Server.Services.Interfaces;
+using System.Net;
+using System.Net.Mail;
 
 namespace Reservas_Salas.Server.Services.Implementations
 {
@@ -64,20 +66,19 @@ namespace Reservas_Salas.Server.Services.Implementations
             if (reserva == null)
                 throw new ArgumentNullException(nameof(reserva));
 
-            // Si la fecha fin no viene, asumimos que dura 1 hora
-            if (reserva.FechaFin == default || reserva.FechaFin <= reserva.FechaInicio)
-                reserva.FechaFin = reserva.FechaFin;
-
+            // 🔹 Validar sala
             var sala = await _context.TSalas.FindAsync(reserva.IdSala);
             if (sala == null)
                 throw new InvalidOperationException("La sala especificada no existe.");
 
-            // Comprobar solapamientos: misma sala y misma fecha (comparando por Date)
+            
+           
             var fechaReserva = reserva.FechaInicio.Date;
 
+            // 🔹 Verificar conflictos
             bool hayConflicto = await _context.TReservas.AnyAsync(r =>
                 r.IdSala == reserva.IdSala &&
-                r.FechaInicio.Date == fechaReserva &&
+                r.Estado != 0 && // solo reservas activas
                 (
                     (reserva.FechaInicio >= r.FechaInicio && reserva.FechaInicio < r.FechaFin) ||
                     (reserva.FechaFin > r.FechaInicio && reserva.FechaFin <= r.FechaFin) ||
@@ -88,11 +89,72 @@ namespace Reservas_Salas.Server.Services.Implementations
             if (hayConflicto)
                 throw new InvalidOperationException("La sala no está disponible en el horario seleccionado.");
 
+            // 🔹 Obtener el empleado asociado
+            var empleado = await _context.TEmpleados
+                .Include(e => e.CargoNavigation)
+                .FirstOrDefaultAsync(e => e.IdEmpleado == reserva.IdEmpleado);
+
+            if (empleado == null)
+                throw new InvalidOperationException("El empleado no existe.");
+
+            if (string.IsNullOrEmpty(empleado.Email))
+                throw new InvalidOperationException("El empleado no tiene un correo registrado.");
+
+            // 🔹 Guardar la reserva
             _context.TReservas.Add(reserva);
             await _context.SaveChangesAsync();
 
+            //// 🔹 Enviar correo de confirmación
+            //try
+            //{
+            //    using (var smtp = new SmtpClient("smtp.office365.com", 587))
+            //    {
+            //        smtp.Credentials = new NetworkCredential("Info@increar.com.co", "P*556918403570af");
+            //        smtp.EnableSsl = true;
+            //        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+
+            //        string fecha = reserva.FechaInicio.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"));
+            //        string horaInicio = reserva.FechaInicio.ToString("HH:mm");
+            //        string horaFin = reserva.FechaFin.ToString("HH:mm");
+
+            //        var mail = new MailMessage
+            //        {
+            //            From = new MailAddress("Info@increar.com.co", "Reservas Salas"),
+            //            Subject = "Confirmación de reserva de sala - PROSEAR / INCREAR",
+            //            IsBodyHtml = true,
+            //            Body = $@"
+            //        <body style='font-family: Arial; color:#333;'>
+            //            <h2>Confirmación de reserva</h2>
+            //            <p>Hola <b>{empleado.Nombre} {empleado.Apellido}</b>,</p>
+            //            <p>Tu reserva se ha registrado exitosamente con los siguientes detalles:</p>
+            //            <ul>
+            //                <li><b>Sala:</b> {sala.Salas}</li>
+            //                <li><b>Fecha:</b> {fecha}</li>
+            //                <li><b>Hora:</b> {horaInicio} - {horaFin}</li>
+            //                <li><b>Cargo:</b> {empleado.CargoNavigation?.Cargo}</li>
+            //            </ul>
+            //            <p>Si no realizaste esta reserva, por favor comunícate con el área de sistemas.</p>
+            //            <hr/>
+            //            <p style='font-size:12px;color:gray;'>Este mensaje fue generado automáticamente por el sistema de reservas de salas PROSEAR / INCREAR.</p>
+            //        </body>"
+            //        };
+
+            //        mail.To.Add(new MailAddress(empleado.Email));
+            //        mail.Priority = MailPriority.High;
+
+            //        await smtp.SendMailAsync(mail);
+            //    }
+
+            //    return reserva;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine("Error SMTP: " + ex.ToString());
+            //    throw new Exception($"Error al enviar correo de confirmación: {ex.Message}");
+            //}
             return reserva;
         }
+
 
 
         public async Task<TReserva?> UpdateAsync(TReserva reserva)

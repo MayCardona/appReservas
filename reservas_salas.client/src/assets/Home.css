@@ -4,6 +4,7 @@
   min-height: 100vh;
 }
 
+/* PANEL GENERAL */
 .panel {
   background: #1a1d23;
   border-radius: 1.5rem;
@@ -11,6 +12,7 @@
   border: 1px solid rgba(0, 255, 255, 0.05);
 }
 
+/* LISTA DE SALAS */
 .list-group-item {
   background: transparent;
   color: #e4e4e4;
@@ -29,12 +31,14 @@
   border-radius: 10px;
 }
 
+/* GRID DE BLOQUES */
 .schedule-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1rem;
 }
 
+/* BLOQUES DE HORARIO */
 .slot {
   background: #22252b;
   padding: 1rem;
@@ -49,17 +53,37 @@
   transform: scale(1.03);
 }
 
+/* BLOQUE DISPONIBLE */
 .slot.disponible {
   background: rgba(0, 255, 100, 0.15);
   border-color: #00ff99;
 }
 
+/* BLOQUE OCUPADO */
 .slot.ocupado {
   background: rgba(255, 0, 0, 0.15);
   border-color: #ff4444;
-  cursor: not-allowed;
+  /* cursor: not-allowed; */
+  position: relative;
 }
 
+/* 🔹 NUEVO: botón cancelar flotante (solo visible al superusuario) */
+.slot.ocupado button.btn-outline-danger {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0.8;
+  border: none;
+  padding: 0.3rem 0.4rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.slot.ocupado button.btn-outline-danger:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* BLOQUE PASADO */
 .slot.pasado {
   background: rgba(120, 120, 120, 0.15);
   border-color: rgba(180, 180, 180, 0.3);
@@ -67,6 +91,8 @@
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+/* BLOQUE SELECCIONADO */
 .slot.seleccionado {
   background-color: #007bff;
   color: white;
@@ -74,7 +100,7 @@
   transform: scale(1.05);
 }
 
-
+/* TEXTOS DENTRO DE BLOQUES */
 .hora {
   font-weight: 500;
   display: block;
@@ -83,4 +109,15 @@
 .estado {
   font-size: 0.9rem;
   opacity: 0.8;
+}
+
+/* 🔹 NUEVO: resaltar bloques seleccionados contiguos */
+.slot.seleccionado + .slot.seleccionado {
+  border-top: none;
+  border-bottom: none;
+}
+
+/* 🔹 NUEVO: transición visual para los cambios */
+.slot {
+  transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
