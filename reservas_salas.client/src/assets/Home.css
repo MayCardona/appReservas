@@ -1,123 +1,217 @@
-.home-wrapper {
-  background: #0f1115;
-  color: #e4e4e4;
+/* === Fondo general con degradado azul === */
+.home-wizard-wrapper {
   min-height: 100vh;
+  background: linear-gradient(135deg, #0033a0, #007bff);
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  font-family: "Poppins", sans-serif;
 }
 
-/* PANEL GENERAL */
-.panel {
-  background: #1a1d23;
-  border-radius: 1.5rem;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
-  border: 1px solid rgba(0, 255, 255, 0.05);
-}
-
-/* LISTA DE SALAS */
-.list-group-item {
+/* === Línea de pasos (stepper) === */
+.stepper-line-container {
+  position: relative;
+  width: 70%;
+  max-width: 900px;
+  height: 4px;
   background: transparent;
-  color: #e4e4e4;
-  border: none;
-  transition: 0.2s ease;
+  margin-top: 1rem;
 }
 
-.list-group-item:hover {
-  background: rgba(0, 255, 255, 0.1);
+.stepper-line-base {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
 }
 
-.active-sala {
-  background: #00bfa6 !important;
-  color: #000 !important;
+.step-circle {
+  position: absolute;
+  top: -12px;
+  width: 30px;
+  height: 30px;
+  background: white;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  color: #0033a0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-weight: 600;
-  border-radius: 10px;
+  transition: all 0.4s ease;
+  z-index: 2;
 }
 
-/* GRID DE BLOQUES */
-.schedule-grid {
+.step-circle.active {
+  background: #00b4ff;
+  border-color: white;
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.6);
+  transform: scale(1.1);
+}
+
+.step-label {
+  position: absolute;
+  bottom: -1.8rem;
+  width: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* === Tarjeta principal (contenedor de pasos) === */
+.card-step {
+  width: 90%;
+  max-width: 850px;
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 3rem 2rem;
+  margin-top: 3rem;
+  transition: all 0.4s ease;
+}
+
+/* === Contenido de cada paso === */
+.step-content {
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Grilla de salas === */
+.salas-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1rem;
 }
 
-/* BLOQUES DE HORARIO */
-.slot {
-  background: #22252b;
-  padding: 1rem;
+.sala-card {
+  background: #f4f8ff;
   border-radius: 1rem;
-  text-align: center;
-  transition: all 0.2s ease-in-out;
+  padding: 1.5rem 1rem;
   cursor: pointer;
-  border: 1px solid rgba(0, 255, 255, 0.1);
+  border: 2px solid transparent;
+  box-shadow: 0 0 5px rgba(0, 51, 160, 0.1);
+  transition: all 0.3s ease;
+}
+
+.sala-card:hover {
+  transform: scale(1.03);
+  border-color: #007bff;
+}
+
+.sala-card.active {
+  background: #007bff;
+  color: white;
+  font-weight: 600;
+  border-color: #0056b3;
+}
+
+/* === Grilla de horarios === */
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.slot {
+  background: #f7f7f7;
+  border: 2px solid transparent;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
 }
 
 .slot:hover {
-  transform: scale(1.03);
-}
-
-/* BLOQUE DISPONIBLE */
-.slot.disponible {
-  background: rgba(0, 255, 100, 0.15);
-  border-color: #00ff99;
-}
-
-/* BLOQUE OCUPADO */
-.slot.ocupado {
-  background: rgba(255, 0, 0, 0.15);
-  border-color: #ff4444;
-  /* cursor: not-allowed; */
-  position: relative;
-}
-
-/* 🔹 NUEVO: botón cancelar flotante (solo visible al superusuario) */
-.slot.ocupado button.btn-outline-danger {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  opacity: 0.8;
-  border: none;
-  padding: 0.3rem 0.4rem;
-  transition: all 0.2s ease-in-out;
-}
-
-.slot.ocupado button.btn-outline-danger:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-/* BLOQUE PASADO */
-.slot.pasado {
-  background: rgba(120, 120, 120, 0.15);
-  border-color: rgba(180, 180, 180, 0.3);
-  color: #777;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-/* BLOQUE SELECCIONADO */
-.slot.seleccionado {
-  background-color: #007bff;
-  color: white;
-  border: 2px solid #80bdff;
   transform: scale(1.05);
 }
 
-/* TEXTOS DENTRO DE BLOQUES */
-.hora {
-  font-weight: 500;
-  display: block;
+/* Colores de estado */
+.slot.disponible {
+  background: rgba(0, 255, 100, 0.15);
+  border-color: #00b86b;
+  color: #007b55;
 }
 
-.estado {
-  font-size: 0.9rem;
-  opacity: 0.8;
+.slot.seleccionado {
+  background: #007bff;
+  color: white;
+  border: 2px solid #0056b3;
 }
 
-/* 🔹 NUEVO: resaltar bloques seleccionados contiguos */
-.slot.seleccionado + .slot.seleccionado {
-  border-top: none;
-  border-bottom: none;
+.slot.ocupado {
+  background: rgba(255, 0, 0, 0.1);
+  border-color: #ff4444;
+  color: #c62828;
+  cursor: not-allowed;
 }
 
-/* 🔹 NUEVO: transición visual para los cambios */
-.slot {
-  transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+/* === Botones === */
+.btn-next,
+.btn-prev,
+.btn-confirmar {
+  background: #0033a0;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-prev {
+  background: #555;
+}
+
+.btn-next:hover,
+.btn-prev:hover,
+.btn-confirmar:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.btn-confirmar {
+  background: linear-gradient(135deg, #00b4ff, #007bff);
+}
+
+/* === Ajustes responsivos === */
+@media (max-width: 768px) {
+  .card-step {
+    padding: 2rem 1.2rem;
+  }
+
+  .stepper-line-container {
+    width: 90%;
+  }
+
+  .step-label {
+    font-size: 0.7rem;
+    bottom: -1.5rem;
+  }
+
+  .slot {
+    font-size: 0.85rem;
+    padding: 0.8rem;
+  }
 }

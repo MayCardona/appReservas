@@ -1,25 +1,26 @@
 /* === Tarjeta de reserva general === */
 .reserva-card {
-  background-color: #0b132b;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(0, 51, 160, 0.15); /* azul oscuro translúcido */
   border-radius: 16px;
   padding: 1.5rem;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 51, 160, 0.15);
   cursor: pointer;
+  color: #1a1a1a;
 }
 
 /* Hover general */
 .reserva-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 15px rgba(0, 51, 160, 0.25);
 }
 
 /* Cuando está activa (expandida) */
 .reserva-card.active {
-  border-color: #00b4d8;
-  background-color: #1d3557;
-  box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+  border-color: #0077ff;
+  box-shadow: 0 0 12px rgba(0, 119, 255, 0.4);
+  background: linear-gradient(145deg, #ffffff, #f0f6ff);
 }
 
 /* === Estados === */
@@ -31,8 +32,10 @@
 
 /* Cancelada visualmente */
 .reserva-card.bg-secondary {
-  opacity: 0.75;
-  border-color: rgba(255, 0, 0, 0.3);
+  background: #f8f9fa;
+  opacity: 0.8;
+  border-color: rgba(255, 0, 0, 0.25);
+  box-shadow: none;
 }
 
 .reserva-card.bg-secondary:hover {
@@ -56,19 +59,220 @@
 /* === Botones === */
 .btn-outline-danger {
   border-radius: 8px;
+  border: 1px solid #d62828;
+  color: #d62828;
+  background: transparent;
   transition: all 0.3s ease;
 }
 
 .btn-outline-danger:hover {
-  background-color: #e63946;
-  color: white;
+  background-color: #d62828;
+  color: #fff;
+}
+
+/* Botón de cancelar superusuario (pequeño sobre el bloque horario) */
+.btn-cancelar {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(255, 0, 0, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.4rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-cancelar:hover {
+  background: #b30000;
 }
 
 /* === Texto general === */
 .text-info {
-  color: #00b4d8 !important;
+  color: #0077ff !important;
 }
 
 .text-muted {
-  color: #adb5bd !important;
+  color: #6c757d !important;
+}
+
+/* === Fondo general del Home === */
+.home-wizard-wrapper {
+  background: linear-gradient(135deg, #0033a0, #0077ff);
+  min-height: 100vh;
+  color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1rem;
+}
+
+/* === Tarjeta principal del asistente === */
+.card-step {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem;
+  transition: all 0.3s ease-in-out;
+}
+
+/* === Stepper === */
+.stepper-line-container {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  height: 4px;
+  background: transparent;
+  margin-bottom: 2rem;
+}
+
+.stepper-line-base {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-50%);
+  border-radius: 4px;
+}
+
+.step-circle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border: 3px solid #0033a0;
+  color: #0033a0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.step-circle.active {
+  background: #0033a0;
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 51, 160, 0.6);
+}
+
+.step-label {
+  position: absolute;
+  top: 50px;
+  font-size: 0.85rem;
+  color: white;
+}
+
+/* === Botones generales === */
+.btn-next,
+.btn-prev,
+.btn-confirmar {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-next {
+  background-color: #0033a0;
+  color: white;
+}
+
+.btn-next:hover {
+  background-color: #0047cc;
+}
+
+.btn-prev {
+  background-color: #ccc;
+  color: #1a1a1a;
+}
+
+.btn-confirmar {
+  background: linear-gradient(135deg, #0077ff, #0033a0);
+  color: white;
+  box-shadow: 0 3px 10px rgba(0, 51, 160, 0.3);
+}
+
+.btn-confirmar:hover {
+  opacity: 0.9;
+}
+
+/* === Bloques horarios === */
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.slot {
+  position: relative;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid rgba(0, 51, 160, 0.1);
+}
+
+.slot.disponible {
+  background: rgba(0, 153, 255, 0.1);
+}
+
+.slot.seleccionado {
+  background: #0033a0;
+  color: white;
+}
+
+.slot.ocupado {
+  background: rgba(255, 0, 0, 0.1);
+  color: #990000;
+  cursor: not-allowed;
+}
+
+.slot.pasado {
+  background: rgba(120, 120, 120, 0.15);
+  color: #777;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* === Tarjeta de sala === */
+.salas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.2rem;
+}
+
+.sala-card {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 51, 160, 0.15);
+}
+
+.sala-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 51, 160, 0.25);
+}
+
+.sala-card.active {
+  border-color: #0033a0;
+  background: linear-gradient(145deg, #eaf2ff, #ffffff);
+  box-shadow: 0 0 10px rgba(0, 51, 160, 0.4);
 }

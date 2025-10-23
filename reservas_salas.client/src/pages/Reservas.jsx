@@ -85,7 +85,7 @@ export default function MisReservas() {
                     setReservaActiva(isActive ? null : r.idReserva)
                   }
                 >
-                  <div className="card-body text-light text-center">
+                  <div className="card-body text-dark text-center">
                     <h5 className="text-info fw-bold mb-2">
                       <i className="bi bi-door-open me-2"></i>
                       {r.nombreSala}
