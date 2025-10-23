@@ -8224,11 +8224,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Maycol Cardona\\Desktop\\appReservas\\Reservas_Salas.Server\\Reservas_Salas.Server.csproj",
+      "projectUniqueName": "C:\\Users\\Maycol Cardona\\Music\\appReservas\\Reservas_Salas.Server\\Reservas_Salas.Server.csproj",
       "projectName": "Reservas_Salas.Server",
-      "projectPath": "C:\\Users\\Maycol Cardona\\Desktop\\appReservas\\Reservas_Salas.Server\\Reservas_Salas.Server.csproj",
+      "projectPath": "C:\\Users\\Maycol Cardona\\Music\\appReservas\\Reservas_Salas.Server\\Reservas_Salas.Server.csproj",
       "packagesPath": "C:\\Users\\Maycol Cardona\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Maycol Cardona\\Desktop\\appReservas\\Reservas_Salas.Server\\obj\\",
+      "outputPath": "C:\\Users\\Maycol Cardona\\Music\\appReservas\\Reservas_Salas.Server\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -8243,7 +8243,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

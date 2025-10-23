@@ -63,13 +63,13 @@ namespace Reservas_Salas.Server.Controllers
             }
         }
 
-        [HttpPost("bring-name")]
-        public async Task<IActionResult> BringEmployeeName([FromBody] OtpRequestDTO dto)
+        [HttpPost("bring-info")]
+        public async Task<IActionResult> BringEmployeeInfo([FromBody] OtpRequestDTO dto)
         {
             try
             {
-                var EmployeeName= await _otpService.BringEmployeeNameAsync(dto.IdEmpleado);
-                return Ok(EmployeeName);
+                var EmployeeInfo= await _otpService.BringEmployeeInfoAsync(dto.IdEmpleado);
+                return Ok(EmployeeInfo);
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);

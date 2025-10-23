@@ -104,55 +104,55 @@ namespace Reservas_Salas.Server.Services.Implementations
             _context.TReservas.Add(reserva);
             await _context.SaveChangesAsync();
 
-            //// 🔹 Enviar correo de confirmación
-            //try
-            //{
-            //    using (var smtp = new SmtpClient("smtp.office365.com", 587))
-            //    {
-            //        smtp.Credentials = new NetworkCredential("Info@increar.com.co", "P*556918403570af");
-            //        smtp.EnableSsl = true;
-            //        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            //  Enviar correo de confirmación
+            try
+            {
+                using (var smtp = new SmtpClient("smtp.office365.com", 587))
+                {
+                    smtp.Credentials = new NetworkCredential("Info@increar.com.co", "P*556918403570af");
+                    smtp.EnableSsl = true;
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 
-            //        string fecha = reserva.FechaInicio.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"));
-            //        string horaInicio = reserva.FechaInicio.ToString("HH:mm");
-            //        string horaFin = reserva.FechaFin.ToString("HH:mm");
+                    string fecha = reserva.FechaInicio.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"));
+                    string horaInicio = reserva.FechaInicio.ToString("HH:mm");
+                    string horaFin = reserva.FechaFin.ToString("HH:mm");
 
-            //        var mail = new MailMessage
-            //        {
-            //            From = new MailAddress("Info@increar.com.co", "Reservas Salas"),
-            //            Subject = "Confirmación de reserva de sala - PROSEAR / INCREAR",
-            //            IsBodyHtml = true,
-            //            Body = $@"
-            //        <body style='font-family: Arial; color:#333;'>
-            //            <h2>Confirmación de reserva</h2>
-            //            <p>Hola <b>{empleado.Nombre} {empleado.Apellido}</b>,</p>
-            //            <p>Tu reserva se ha registrado exitosamente con los siguientes detalles:</p>
-            //            <ul>
-            //                <li><b>Sala:</b> {sala.Salas}</li>
-            //                <li><b>Fecha:</b> {fecha}</li>
-            //                <li><b>Hora:</b> {horaInicio} - {horaFin}</li>
-            //                <li><b>Cargo:</b> {empleado.CargoNavigation?.Cargo}</li>
-            //            </ul>
-            //            <p>Si no realizaste esta reserva, por favor comunícate con el área de sistemas.</p>
-            //            <hr/>
-            //            <p style='font-size:12px;color:gray;'>Este mensaje fue generado automáticamente por el sistema de reservas de salas PROSEAR / INCREAR.</p>
-            //        </body>"
-            //        };
+                    var mail = new MailMessage
+                    {
+                        From = new MailAddress("Info@increar.com.co", "Reservas Salas"),
+                        Subject = "Confirmación de reserva de sala - PROSEAR / INCREAR",
+                        IsBodyHtml = true,
+                        Body = $@"
+                    <body style='font-family: Arial; color:#333;'>
+                        <h2>Confirmación de reserva</h2>
+                        <p>Hola <b>{empleado.Nombre} {empleado.Apellido}</b>,</p>
+                        <p>Tu reserva se ha registrado exitosamente con los siguientes detalles:</p>
+                        <ul>
+                            <li><b>Sala:</b> {sala.Salas}</li>
+                            <li><b>Fecha:</b> {fecha}</li>
+                            <li><b>Hora:</b> {horaInicio} - {horaFin}</li>
+                            <li><b>Cargo:</b> {empleado.CargoNavigation?.Cargo}</li>
+                        </ul>
+                        <p>Si no realizaste esta reserva, por favor comunícate con el área de sistemas.</p>
+                        <hr/>
+                        <p style='font-size:12px;color:gray;'>Este mensaje fue generado automáticamente por el sistema de reservas de salas PROSEAR / INCREAR.</p>
+                    </body>"
+                    };
 
-            //        mail.To.Add(new MailAddress(empleado.Email));
-            //        mail.Priority = MailPriority.High;
+                    mail.To.Add(new MailAddress(empleado.Email));
+                    mail.Priority = MailPriority.High;
 
-            //        await smtp.SendMailAsync(mail);
-            //    }
+                    await smtp.SendMailAsync(mail);
+                }
 
-            //    return reserva;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine("Error SMTP: " + ex.ToString());
-            //    throw new Exception($"Error al enviar correo de confirmación: {ex.Message}");
-            //}
-            return reserva;
+                return reserva;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error SMTP: " + ex.ToString());
+                throw new Exception($"Error al enviar correo de confirmación: {ex.Message}");
+            }
+            //return reserva;
         }
 
 

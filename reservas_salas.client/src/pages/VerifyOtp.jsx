@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { bringEmployeeName, verifyOtp } from "../api/apiClient";
+import { bringEmployeeInfo, verifyOtp } from "../api/apiClient";
 import { useAuth } from "../context/AuthContext";
 
 export default function VerifyOtp() {
@@ -24,9 +24,11 @@ export default function VerifyOtp() {
             const result = await verifyOtp(state.identificacion, code);
 
             if (result.success) {
-                const employeeName = await bringEmployeeName(state.identificacion);
+                const employee = await bringEmployeeInfo(state.identificacion);
 
-                login({ nombre: employeeName, id: state.identificacion, idCargo: 2});
+                console.log(employee.nombreCompleto + employee.cargo);
+                
+                login({ nombre: employee.nombreCompleto, id: state.identificacion, idCargo: employee.cargo});
                 navigate("/");
             } else {
                 setMessage(result.message || "Código incorrecto.");

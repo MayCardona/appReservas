@@ -26,8 +26,8 @@ export async function verifyOtp(id, code) {
   return response.json();
 }
 
-export async function bringEmployeeName(id) {
-  const response = await fetch(`${API_URL}/api/Auth/bring-name`, {
+export async function bringEmployeeInfo(id) {
+  const response = await fetch(`${API_URL}/api/Auth/bring-info`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ IdEmpleado: id }),
@@ -38,8 +38,8 @@ export async function bringEmployeeName(id) {
     throw new Error(`Error al traer el nombre del empleado: ${errorText}`);
   }
 
-  const name = await response.text();
-  return name;
+  const info = await response.json();
+  return info;
 }
 
 export async function bringEmployeeCharge(id){

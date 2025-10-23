@@ -12,8 +12,9 @@ import { getSecureItem } from "../utils/secureStorage";
 import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
+  const idCargoAdmin = import.meta.env.ID_CARGO_ADMIN
   const user = getSecureItem("user");
-  const esSuperUsuario = user?.idCargo === 2;
+  const esSuperUsuario = user?.idCargo === parseInt(idCargoAdmin);
   const [salas, setSalas] = useState([]);
   const [salaSeleccionada, setSalaSeleccionada] = useState(null);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(

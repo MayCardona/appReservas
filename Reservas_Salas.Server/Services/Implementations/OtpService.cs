@@ -113,23 +113,26 @@ namespace Reservas_Salas.Server.Services.Implementations
             }
         }
 
-        public async Task<string> BringEmployeeNameAsync(long IdEmpleado)
+        public async Task<object> BringEmployeeInfoAsync(long IdEmpleado)
         {
             try
             {
-                var empleado = await _context.TEmpleados.FirstOrDefaultAsync(e => e.IdEmpleado == IdEmpleado);
+                var empleado = await _context.TEmpleados
+                    .Include(e => e.CargoNavigation)
+                    .FirstOrDefaultAsync(e => e.IdEmpleado == IdEmpleado);
 
                 if (empleado == null)
-                {
                     throw new Exception("Empleado no encontrado.");
-                }
 
-                var empleadoName = $"{empleado.Nombre} {empleado.Apellido}";
-
-                return empleadoName;
-            }catch(Exception ex)
+                return new
+                {
+                    NombreCompleto = $"{empleado.Nombre} {empleado.Apellido}",
+                    Cargo = empleado.CargoNavigation?.IdCargo ?? 0
+                };
+            }
+            catch (Exception ex)
             {
-                throw new Exception($"Error al traer el nombre del empleado: {ex.Message}");
+                throw new Exception($"Error al traer información del empleado: {ex.Message}");
             }
         }
     }
