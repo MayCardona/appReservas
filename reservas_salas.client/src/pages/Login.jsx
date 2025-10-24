@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { generateOtp } from "../api/apiClient";
+import "../assets/Login.css";
 
 export default function Login() {
   const [identificacion, setIdentificacion] = useState("");
@@ -30,22 +31,26 @@ export default function Login() {
   };
 
   return (
-    <div className="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-dark text-light">
-      <h2>Ingreso con Identificación</h2>
-      <form onSubmit={handleSubmit} className="w-25">
-        <input
-          type="text"
-          placeholder="Número de identificación"
-          className="form-control mb-3"
-          value={identificacion}
-          onChange={(e) => setIdentificacion(e.target.value)}
-          required
-        />
-        <button type="submit" disabled={loading} className="btn btn-info w-100">
-          {loading ? "Enviando..." : "Enviar OTP"}
-        </button>
-      </form>
-      {message && <p className="mt-3">{message}</p>}
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Ingreso con Identificación</h2>
+
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Número de identificación"
+            value={identificacion}
+            onChange={(e) => setIdentificacion(e.target.value)}
+            required
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? "Enviando..." : "Enviar OTP"}
+          </button>
+        </form>
+
+        {message && <p className="login-message">{message}</p>}
+      </div>
     </div>
+
   );
 }

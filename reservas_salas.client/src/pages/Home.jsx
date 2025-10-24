@@ -11,11 +11,11 @@ import {
 import { getSecureItem } from "../utils/secureStorage";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FaTv, FaUsers, FaDoorOpen } from "react-icons/fa";
 
 export default function Home() {
   const user = getSecureItem("user");
-  const esSuperUsuario = user?.idCargo === 3;
-
+  const esSuperUsuario = user?.idCargo === 30 || user?.idCargo === '30';
   const navigate = useNavigate();
 
   const [salas, setSalas] = useState([]);
@@ -85,7 +85,7 @@ export default function Home() {
         .toString()
         .padStart(2, "0")}:${minutos}:00`);
       const fin = new Date(inicio.getTime() + 30 * 60 * 1000);
-
+      
       const reservaBloque = reservas.find((r) => {
         if (r.estado === 0) return false;
         const fi = new Date(r.fechaInicio);
@@ -184,13 +184,7 @@ export default function Home() {
         await Swal.fire("Reserva creada correctamente", "", "success");
         setBloquesSeleccionados([]);
         setPaso(4);
-        const nuevas = await getReservasPorSalaYFecha(
-          salaSeleccionada,
-          fechaSeleccionada
-        ).then(()=>{
-          navigate("/reservas");
-        });
-        setReservas(nuevas);
+        navigate("/reservas");
       } else {
         Swal.fire("Error", result.message, "error");
       }
@@ -200,7 +194,7 @@ export default function Home() {
     }
   };
 
-  // 🔹 Cancelar reserva (superusuario)
+  // 🔹 Cancelar reserva
   const handleCancelarReserva = async (idReserva) => {
     const confirm = await Swal.fire({
       title: "¿Cancelar esta reserva?",
@@ -283,6 +277,15 @@ export default function Home() {
                   }`}
                   onClick={() => setSalaSeleccionada(sala.idSala)}
                 >
+                  <div className="sala-icon">
+                    {sala.idSala % 3 === 0 ? (
+                      <FaDoorOpen size={28} />
+                    ) : sala.idSala % 2 === 0 ? (
+                      <FaUsers size={28} />
+                    ) : (
+                      <FaTv size={28} />
+                    )}
+                  </div>
                   <h4>{sala.salas}</h4>
                 </div>
               ))}
@@ -321,11 +324,15 @@ export default function Home() {
                       ? "seleccionado"
                       : "disponible"
                   }`}
-                  onClick={() =>
-                    handleSeleccionBloque(bloque.horaInicio)
-                  }
+                  onClick={() => handleSeleccionBloque(bloque.horaInicio)}
                 >
                   {bloque.label}
+                  {bloque.ocupado && bloque.reserva && (
+                    <div className="reserva-info">
+                      <strong>{bloque.reserva.idEmpleadoNavigation.nombre} {bloque.reserva.idEmpleadoNavigation.apellido}</strong>
+                      <small>{bloque.reserva.idEmpleadoNavigation.cargoNavigation.cargo}</small>
+                    </div>
+                  )}
                   {esSuperUsuario && bloque.reserva && (
                     <button
                       className="btn-cancelar"
