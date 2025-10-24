@@ -15,10 +15,13 @@ namespace Reservas_Salas.Server.Services.Implementations
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public OtpService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        private readonly ISendMailService _mailService;
+
+        public OtpService(AppDbContext context, IHttpContextAccessor httpContextAccessor, ISendMailService mailService) 
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _mailService = mailService;
         }
         public async Task<string> GenerateOtpAsync(long IdEmpleado)
         {
@@ -42,36 +45,26 @@ namespace Reservas_Salas.Server.Services.Implementations
             // Enviar correo con Office 365
             try
             {
-                using (var smtp = new SmtpClient("smtp.office365.com", 587))
-                {
-                    smtp.Credentials = new NetworkCredential("Info@increar.com.co", "P*556918403570af");
-                    smtp.EnableSsl = true;
-                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                MailSenderModel correo = new MailSenderModel();
 
-                    var mail = new MailMessage
-                    {
-                        From = new MailAddress("Info@increar.com.co", "Reservas Salas"),
-                        Subject = "Código de confirmación - Reservas Salas PROSEAR/INCREAR",
-                        IsBodyHtml = true,
-                        Body = $@"
+                correo.email = empleado.Email;
+                correo.subject = "Código de confirmación - Reservas Salas PROSEAR/INCREAR";
+                correo.body = $@"
                             <body>
                             <h1>
                                 Para ingresar al aplicativo de reservas digite el siguiente código de seguridad:
                             <br><br><b>{code}</b>
                             </h1>
-                            </body>"
-                    };
+                            </body>";
 
-                    mail.To.Add(new MailAddress(empleado.Email));
-                    mail.Priority = MailPriority.High;
+                await _mailService.SendMailAsync(correo);
 
-                    await smtp.SendMailAsync(mail);
-                    string CodeOtp = "";
-                    _httpContextAccessor.HttpContext.Session.SetString("CodeOtp", code);
+                string CodeOtp = "";
+                _httpContextAccessor.HttpContext.Session.SetString("CodeOtp", code);
 
-                    _httpContextAccessor.HttpContext.Session.SetString("IdEmpleado", Identificacion);
-                    CodeOtp = _httpContextAccessor.HttpContext.Session.GetString("CodeOtp");
-                }
+                _httpContextAccessor.HttpContext.Session.SetString("IdEmpleado", Identificacion);
+                CodeOtp = _httpContextAccessor.HttpContext.Session.GetString("CodeOtp");
+                
 
                 return code;
             }

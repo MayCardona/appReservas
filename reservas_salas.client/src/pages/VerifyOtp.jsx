@@ -27,7 +27,6 @@ export default function VerifyOtp() {
 
       if (result.success) {
         const employee = await bringEmployeeInfo(state.identificacion);
-        console.log(employee.nombreCompleto + " " + employee.cargo);
 
         login({
           nombre: employee.nombreCompleto,

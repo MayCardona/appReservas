@@ -221,19 +221,32 @@ export async function eliminarReserva(idReserva) {
       credentials: "include",
       body: JSON.stringify({
         IdReserva: idReserva,
-        Estado: 0,            
+        Estado: 0, // 0 = cancelada
       }),
     });
 
-    const data = await response.json();
+    // 📌 Leer como texto para evitar errores de parseo
+    const text = await response.text();
 
-    if (!response.ok) {
-      throw new Error(data.message || "Error al cancelar la reserva");
+    let data;
+    try {
+      data = JSON.parse(text); // Intentar parsear como JSON
+    } catch {
+      data = text; // Si no es JSON, dejarlo como texto plano
     }
 
+    if (!response.ok) {
+      console.error("❌ Error del backend:", data);
+      throw new Error(
+        data?.message || data || "Error al cancelar la reserva"
+      );
+    }
+
+    console.log("✅ Reserva cancelada correctamente:", data);
     return data;
   } catch (err) {
-    console.error("Error al cancelar la reserva:", err);
+    console.error("⚠️ Error al cancelar la reserva:", err.message);
     throw err;
   }
 }
+

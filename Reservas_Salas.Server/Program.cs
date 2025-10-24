@@ -53,6 +53,7 @@ builder.Services.AddScoped<ITSalaService, TSalaService>();
 builder.Services.AddScoped<ITEmpleadoService, TEmpleadoService>();
 builder.Services.AddScoped<ITReservaService, TReservaService>();
 builder.Services.AddScoped<IOtpService, OtpService>();
+builder.Services.AddScoped<ISendMailService, SendMailService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();

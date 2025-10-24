@@ -11,10 +11,12 @@ namespace Reservas_Salas.Server.Services.Implementations
     public class TReservaService : ITReservaService
     {
         private readonly AppDbContext _context;
+        private readonly ISendMailService _mailService;
 
-        public TReservaService(AppDbContext context)
+        public TReservaService(AppDbContext context, ISendMailService mailService)
         {
             _context = context;
+            _mailService = mailService;
         }
 
         public async Task<IEnumerable<TReserva>> GetAllAsync()
@@ -107,22 +109,15 @@ namespace Reservas_Salas.Server.Services.Implementations
             //  Enviar correo de confirmación
             try
             {
-                using (var smtp = new SmtpClient("smtp.office365.com", 587))
-                {
-                    smtp.Credentials = new NetworkCredential("Info@increar.com.co", "P*556918403570af");
-                    smtp.EnableSsl = true;
-                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                string fecha = reserva.FechaInicio.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"));
+                string horaInicio = reserva.FechaInicio.ToString("HH:mm");
+                string horaFin = reserva.FechaFin.ToString("HH:mm");
 
-                    string fecha = reserva.FechaInicio.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"));
-                    string horaInicio = reserva.FechaInicio.ToString("HH:mm");
-                    string horaFin = reserva.FechaFin.ToString("HH:mm");
+                MailSenderModel correo = new MailSenderModel();
 
-                    var mail = new MailMessage
-                    {
-                        From = new MailAddress("Info@increar.com.co", "Reservas Salas"),
-                        Subject = "Confirmación de reserva de sala - PROSEAR / INCREAR",
-                        IsBodyHtml = true,
-                        Body = $@"
+                correo.email = empleado.Email;
+                correo.subject = "Confirmación de reserva de sala - PROSEAR / INCREAR";
+                correo.body = $@"
                     <body style='font-family: Arial; color:#333;'>
                         <h2>Confirmación de reserva</h2>
                         <p>Hola <b>{empleado.Nombre} {empleado.Apellido}</b>,</p>
@@ -136,21 +131,14 @@ namespace Reservas_Salas.Server.Services.Implementations
                         <p>Si no realizaste esta reserva, por favor comunícate con el área de sistemas.</p>
                         <hr/>
                         <p style='font-size:12px;color:gray;'>Este mensaje fue generado automáticamente por el sistema de reservas de salas PROSEAR / INCREAR.</p>
-                    </body>"
-                    };
-
-                    mail.To.Add(new MailAddress(empleado.Email));
-                    mail.Priority = MailPriority.High;
-
-                    await smtp.SendMailAsync(mail);
-                }
-
+                    </body>";
+                
+                await _mailService.SendMailAsync(correo);
                 return reserva;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error SMTP: " + ex.ToString());
-                throw new Exception($"Error al enviar correo de confirmación: {ex.Message}");
+                throw new Exception($"Error al crear reserva: {ex.Message}");
             }
             //return reserva;
         }
@@ -166,6 +154,61 @@ namespace Reservas_Salas.Server.Services.Implementations
 
             
             await _context.SaveChangesAsync();
+
+            // 🔹 Recuperar los datos completos de la reserva actualizada
+            var reservaCompleta = await _context.TReservas
+                .Include(r => r.IdEmpleadoNavigation)
+                .Include(r => r.IdSalaNavigation)
+                .FirstOrDefaultAsync(r => r.IdReserva == reserva.IdReserva);
+
+            if (reservaCompleta == null)
+                throw new InvalidOperationException("No se encontró la reserva.");
+
+            var empleado = reservaCompleta.IdEmpleadoNavigation;
+            var sala = reservaCompleta.IdSalaNavigation;
+
+            if (empleado == null)
+                throw new InvalidOperationException("El empleado no existe.");
+
+            if (sala == null)
+                throw new InvalidOperationException("La sala no existe.");
+
+            if (string.IsNullOrEmpty(empleado.Email))
+                throw new InvalidOperationException("El empleado no tiene un correo registrado.");
+
+            try
+            {
+                string fecha = reserva.FechaInicio.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"));
+                string horaInicio = reserva.FechaInicio.ToString("HH:mm");
+                string horaFin = reserva.FechaFin.ToString("HH:mm");
+
+                MailSenderModel correo = new MailSenderModel();
+
+                correo.email = empleado.Email;
+                correo.subject = "Notificación cancelación de reserva sala - PROSEAR / INCREAR";
+                correo.body = $@"
+                    <body style='font-family: Arial; color:#333;'>
+                        <h2>Cancelación de reserva</h2>
+                        <p>Hola <b>{empleado.Nombre} {empleado.Apellido}</b>,</p>
+                        <p>Tu reserva se ha cancelado, la cual contaba con los siguientes detalles:</p>
+                        <ul>
+                            <li><b>Sala:</b> {sala.Salas}</li>
+                            <li><b>Fecha:</b> {fecha}</li>
+                            <li><b>Hora:</b> {horaInicio} - {horaFin}</li>
+                            <li><b>Cargo:</b> {empleado.CargoNavigation?.Cargo}</li>
+                        </ul>
+                        <p>Si no realizaste esta reserva, por favor comunícate con el área de sistemas.</p>
+                        <hr/>
+                        <p style='font-size:12px;color:gray;'>Este mensaje fue generado automáticamente por el sistema de reservas de salas PROSEAR / INCREAR.</p>
+                    </body>";
+
+
+                await _mailService.SendMailAsync(correo);
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception($"Error al enviar cancelar reserva: {ex.Message}");
+            }
             return existing;
         }
     }
