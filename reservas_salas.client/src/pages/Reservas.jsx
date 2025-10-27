@@ -21,6 +21,7 @@ export default function MisReservas() {
 
         const data = await getReservasByEmpleado(user.id || user.IdEmpleado);
         setReservas(data);
+        
       } catch (err) {
         Swal.fire("Error", err.message, "error");
       }
@@ -113,6 +114,9 @@ export default function MisReservas() {
                         minute: "2-digit",
                       })}
                     </p>
+                    <h5>
+                      {r.observaciones}
+                    </h5>
 
                     <div
                       className={`expand-section ${

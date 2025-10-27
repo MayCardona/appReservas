@@ -20,6 +20,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   const [salas, setSalas] = useState([]);
+  const [observacion, setObservacion] = useState('');
   const [salaSeleccionada, setSalaSeleccionada] = useState(null);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(
     new Date().toISOString().split("T")[0]
@@ -114,6 +115,7 @@ export default function Home() {
         pasado,
         reserva: reservaBloque || null,
       });
+      
     }
     return bloques;
   };
@@ -149,6 +151,7 @@ export default function Home() {
     const idEmpleado = user.id || user.IdEmpleado || user.Id;
     const salaNombre =
       salas.find((s) => s.idSala === salaSeleccionada)?.salas || "Sala";
+    const observaciones = observacion;
 
     const confirm = await Swal.fire({
       title: "Confirmar reserva",
@@ -179,6 +182,7 @@ export default function Home() {
         fechaInicio: formatoLocal(fechaInicio),
         fechaFin: formatoLocal(fechaFin),
         Estado: 1,
+        Observaciones: observaciones,
       });
 
       if (result.success) {
@@ -332,6 +336,8 @@ export default function Home() {
                     <div className="reserva-info">
                       <strong>{bloque.reserva.idEmpleadoNavigation.nombre} {bloque.reserva.idEmpleadoNavigation.apellido}</strong>
                       <small>{bloque.reserva.idEmpleadoNavigation.cargoNavigation.cargo}</small>
+                      <br />
+                      <small> <i><b>Motivo: </b></i>{bloque.reserva.observaciones}</small>
                     </div>
                   )}
                   {esSuperUsuario && bloque.reserva && (
@@ -389,12 +395,22 @@ export default function Home() {
                   .join(", ")}
               </strong>
             </p>
+            <div className="row align-items-center justify-content-center">
+              <div className="col-6">
+                <label htmlFor="observacion" className="col-form-label">Motivo de reserva:</label>
+                <input className="form-control" type="text" name="observacion" id="observacion" value={observacion} onChange={(e)=>setObservacion(e.target.value)} required/>
+              </div>
+            </div>
 
             <div className="d-flex justify-content-between mt-4">
               <button className="btn-prev" onClick={() => setPaso(3)}>
                 Atrás
               </button>
-              <button className="btn-confirmar" onClick={handleReservar}>
+              <button
+                className={`btn-confirmar ${!observacion.trim() ? "disabled-btn" : ""}`}
+                onClick={handleReservar}
+                disabled={!observacion.trim()}
+              >
                 Confirmar Reserva
               </button>
             </div>

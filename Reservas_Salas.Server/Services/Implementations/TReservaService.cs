@@ -44,7 +44,8 @@ namespace Reservas_Salas.Server.Services.Implementations
                         FechaFin = reserva.FechaFin,
                         IdSala = sala.IdSala,
                         NombreSala = sala.Salas,
-                        Estado = reserva.Estado
+                        Estado = reserva.Estado,
+                        Observaciones = reserva.Observaciones
                     }
                 )
                 .OrderByDescending(r => r.FechaInicio)

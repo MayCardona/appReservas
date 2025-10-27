@@ -143,7 +143,7 @@ export async function getReservasPorSalaYFecha(idSala, fecha) {
  * @param {{idSala:number|string, idEmpleado:number|string, fechaInicio:string, fechaFin:string}} params
  * @returns {Promise<{success:boolean, data?:any, message?:string}>}
  */
-export async function crearReserva({ idSala, idEmpleado, fechaInicio, fechaFin }) {
+export async function crearReserva({ idSala, idEmpleado, fechaInicio, fechaFin, Observaciones}) {
   try {
     const response = await fetch(`${API_URL}/api/TReservas`, {
       method: "POST",
@@ -153,7 +153,8 @@ export async function crearReserva({ idSala, idEmpleado, fechaInicio, fechaFin }
         idEmpleado,
         fechaInicio,
         fechaFin,
-        Estado: 1
+        Estado: 1,
+        Observaciones,        
       }),
     });
 
@@ -191,7 +192,7 @@ export async function getReservasByEmpleado(idEmpleado) {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-    });
+    });    
 
     if (!response.ok) {
       const errorText = await response.text();

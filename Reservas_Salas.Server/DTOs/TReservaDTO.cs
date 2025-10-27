@@ -23,6 +23,9 @@ namespace Reservas_Salas.Server.DTOs
 
         public DateTime FechaFin { get; set; }
         public int Estado {  get; set; }
+        
+        [Required]
+        public string Observaciones { get; set; }
 
     }
 

@@ -230,6 +230,15 @@
   background-color: #c5303a;
 }
 
+.btn-confirmar:disabled,
+.btn-confirmar.disabled-btn {
+  background: #b0c4de;
+  color: #f8f9fa;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
 /* === Responsivo === */
 @media (max-width: 600px) {
   .card-step {

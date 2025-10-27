@@ -74,7 +74,8 @@ namespace Reservas_Salas.Server.Controllers
                 IdEmpleado = dto.IdEmpleado,
                 FechaInicio = dto.FechaInicio,
                 FechaFin = dto.FechaFin,
-                Estado = dto.Estado
+                Estado = dto.Estado,
+                Observaciones = dto.Observaciones
             };
 
             await _reservaservice.CreateAsync(reserva);
