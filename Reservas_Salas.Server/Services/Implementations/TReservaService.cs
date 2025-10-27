@@ -179,9 +179,9 @@ namespace Reservas_Salas.Server.Services.Implementations
 
             try
             {
-                string fecha = reserva.FechaInicio.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"));
-                string horaInicio = reserva.FechaInicio.ToString("HH:mm");
-                string horaFin = reserva.FechaFin.ToString("HH:mm");
+                string fecha = reservaCompleta.FechaInicio.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"));
+                string horaInicio = reservaCompleta.FechaInicio.ToString("HH:mm");
+                string horaFin = reservaCompleta.FechaFin.ToString("HH:mm");
 
                 MailSenderModel correo = new MailSenderModel();
 
@@ -196,7 +196,6 @@ namespace Reservas_Salas.Server.Services.Implementations
                             <li><b>Sala:</b> {sala.Salas}</li>
                             <li><b>Fecha:</b> {fecha}</li>
                             <li><b>Hora:</b> {horaInicio} - {horaFin}</li>
-                            <li><b>Cargo:</b> {empleado.CargoNavigation?.Cargo}</li>
                         </ul>
                         <p>Si no realizaste esta reserva, por favor comunícate con el área de sistemas.</p>
                         <hr/>
