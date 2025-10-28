@@ -1,0 +1,11 @@
+wwwroot\assets\bootstrap-icons-BeopsB42.woff
+wwwroot\assets\bootstrap-icons-mSm7cUeB.woff2
+wwwroot\assets\index-CX0NEDVL.js
+wwwroot\assets\index-D-T_w3aX.js
+wwwroot\assets\index-DLdjEBoK.js
+wwwroot\assets\index-DN2fWReZ.js
+wwwroot\assets\index-Vnuc5Sz2.css
+wwwroot\index.html
+wwwroot\PROSEAR.png
+wwwroot\PROSEARr.png
+wwwroot\vite.svg

@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:57696",
+"RedirectUrl": "",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "C:\\Users\\Maycol Cardona\\Music\\appReservas\\Reservas_Salas.Server\\..\\reservas_salas.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}
