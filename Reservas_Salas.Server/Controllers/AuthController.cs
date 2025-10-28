@@ -49,17 +49,33 @@ namespace Reservas_Salas.Server.Controllers
         {
             try
             {
-                
-                await _otpService.ValidateOtpAsync(dto.IdEmpleado,dto.OtpCode);
-                return Ok(new
+
+                bool isValid = await _otpService.ValidateOtpAsync(dto.IdEmpleado, dto.OtpCode);
+
+                if (isValid)
                 {
-                    success = true,
-                    Message = "Codigo OTP validado correctamente"
-                });
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Código OTP validado correctamente."
+                    });
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Código OTP incorrecto o expirado."
+                    });
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = $"Error al validar el código OTP: {ex.Message}"
+                });
             }
         }
 

@@ -294,6 +294,7 @@ C:\Users\Maycol Cardona\Desktop\appReservas\Reservas_Salas.Server\obj\Debug\net8
 C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server\bin\Debug\net8.0\spa.proxy.json
 C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server\bin\Debug\net8.0\appsettings.json
+C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server\bin\Debug\net8.0\Reservas_Salas.Server.staticwebassets.runtime.json
 C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server\bin\Debug\net8.0\Reservas_Salas.Server.staticwebassets.endpoints.json
 C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server\bin\Debug\net8.0\Reservas_Salas.Server.exe
 C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server\bin\Debug\net8.0\Reservas_Salas.Server.deps.json

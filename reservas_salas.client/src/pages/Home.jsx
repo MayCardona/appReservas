@@ -15,8 +15,8 @@ import { FaTv, FaUsers, FaDoorOpen } from "react-icons/fa";
 
 export default function Home() {
   const user = getSecureItem("user");
-  const esSuperUsuario = user?.idCargo === 30 || user?.idCargo === '30';
-  // const esSuperUsuario = (user?.idCargo === 45 || user?.idCargo === '45')||(user?.idCargo === 62 || user?.idCargo === '62');
+  // const esSuperUsuario = user?.idCargo === 30 || user?.idCargo === '30';
+  const esSuperUsuario = (user?.idCargo === 36 || user?.idCargo === '36')||(user?.idCargo === 62 || user?.idCargo === '62');
   const navigate = useNavigate();
 
   const [salas, setSalas] = useState([]);

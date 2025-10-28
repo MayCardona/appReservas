@@ -51,7 +51,8 @@ public partial class TEmpleado
     [Unicode(false)]
     public string? Ciudad { get; set; }
 
-    public long? IdEquipo { get; set; }
+    [NotMapped]
+    public long IdEquipo { get; set; }
 
     [ForeignKey("Cargo")]
     [InverseProperty("TEmpleados")]

@@ -4,7 +4,7 @@
  *
  * Nota: API_URL se obtiene de import.meta.env.VITE_API_URL y tiene un fallback para desarrollo local.
  */
-const API_URL = import.meta.env.VITE_API_URL || "https://localhost:7146";
+const API_URL = import.meta.env.VITE_API_URL;
 
 /* ===========================
    Autenticación OTP
@@ -41,7 +41,19 @@ export async function verifyOtp(id, code) {
       OtpCode: code,
     }),
   });
-  return response.json();
+  
+  let data;
+  try {
+    data = await response.json(); 
+  } catch {
+    data = { message: "No se pudo leer la respuesta del servidor." };
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Error al validar OTP");
+  }
+
+  return data;
 }
 
 /**

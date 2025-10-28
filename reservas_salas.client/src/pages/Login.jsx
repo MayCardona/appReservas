@@ -35,7 +35,7 @@ export default function Login() {
       <div className="login-card">
         <img src="/PROSEARr.png" width='100%'/>
         <hr />
-        <h2 className="login-title">Reservación de salas</h2>
+        <h2 className="login-title">Reserva de salas</h2>
 
         <form onSubmit={handleSubmit}>
           <input

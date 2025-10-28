@@ -89,7 +89,10 @@ namespace Reservas_Salas.Server.Services.Implementations
                 {
                     throw new Exception("Codigo OTP no encontrado");
                 }
-                 //validar employee antes de otp
+                //validar employee antes de otp
+
+                if (string.IsNullOrEmpty(CodeInput) || string.IsNullOrEmpty(CodeOtp))
+                    return false;
 
                 if (Convert.ToInt32(CodeInput) == Convert.ToInt32(CodeOtp))
                 {
@@ -103,6 +106,7 @@ namespace Reservas_Salas.Server.Services.Implementations
             catch(Exception ex)
             {
                 throw new Exception($"Error al Validar el codigo OTP: {ex.Message}");
+                return false;
             }
         }
 

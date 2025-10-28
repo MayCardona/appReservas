@@ -16,12 +16,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:5173",   // Vite (frontend React)
-            "https://localhost:5173",  // versión HTTPS por si acaso
-            "http://localhost:57696",  // tu antiguo frontend (opcional)
+            "http://localhost:57696",
             "https://localhost:57696",
-            "http://localhost:57697",  // tu antiguo frontend (opcional)
-            "https://localhost:57697"
+            //"http://localhost:57697",
+            //"https://localhost:57697",
+            "https://10.254.35.16:8085",
+            "http://10.254.35.16:8085",
+            "https://10.254.35.16:8086",
+            "http://10.254.35.16:8086"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
