@@ -28,6 +28,8 @@ export default function Home() {
   const [reservas, setReservas] = useState([]);
   const [bloquesSeleccionados, setBloquesSeleccionados] = useState([]);
   const [paso, setPaso] = useState(1);
+  const [loadingReserva, setLoadingReserva] = useState(false);
+
 
   const { reservasActualizadas, setReservasActualizadas } = useAuth();
 
@@ -80,7 +82,7 @@ export default function Home() {
     const bloques = [];
     const ahora = new Date();
 
-    for (let hora = 8; hora < 18; hora += 0.5) {
+    for (let hora = 7; hora < 18; hora += 0.5) {
       const horaEntera = Math.floor(hora);
       const minutos = hora % 1 === 0 ? "00" : "30";
       const inicio = new Date(`${fechaSeleccionada}T${horaEntera
@@ -172,6 +174,10 @@ export default function Home() {
     if (!confirm.isConfirmed) return;
 
     try {
+      setLoadingReserva(true);
+
+      // Ajuste de zona horaria
+
       const tzOffset = fechaInicio.getTimezoneOffset() * 60000;
       const formatoLocal = (fecha) =>
         new Date(fecha.getTime() - tzOffset).toISOString().slice(0, 19);
@@ -196,6 +202,8 @@ export default function Home() {
     } catch (error) {
       console.error("Error en handleReservar:", error);
       Swal.fire("Error inesperado", error.message, "error");
+    }finally {
+      setLoadingReserva(false);
     }
   };
 
@@ -332,7 +340,7 @@ export default function Home() {
                   onClick={() => handleSeleccionBloque(bloque.horaInicio)}
                 >
                   {bloque.label}
-                  {bloque.ocupado && bloque.reserva && !bloque.pasado && (
+                  {bloque.ocupado && bloque.reserva && (
                     <div className="reserva-info">
                       <strong>{bloque.reserva.idEmpleadoNavigation.nombre} {bloque.reserva.idEmpleadoNavigation.apellido}</strong>
                       <small>{bloque.reserva.idEmpleadoNavigation.cargoNavigation.cargo}</small>
@@ -340,7 +348,7 @@ export default function Home() {
                       <small> <i><b>Motivo: </b></i>{bloque.reserva.observaciones}</small>
                     </div>
                   )}
-                  {esSuperUsuario && bloque.reserva && (
+                  {esSuperUsuario && bloque.reserva && !bloque.pasado &&  (
                     <button
                       className="btn-cancelar"
                       onClick={(e) => {
@@ -407,11 +415,20 @@ export default function Home() {
                 Atrás
               </button>
               <button
-                className={`btn-confirmar ${!observacion.trim() ? "disabled-btn" : ""}`}
+                className={`btn-confirmar ${
+                  !observacion.trim() || loadingReserva ? "disabled-btn" : ""
+                }`}
                 onClick={handleReservar}
-                disabled={!observacion.trim()}
+                disabled={!observacion.trim() || loadingReserva}
               >
-                Confirmar Reserva
+                {loadingReserva ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Reservando...
+                  </>
+                ) : (
+                  "Confirmar Reserva"
+                )}
               </button>
             </div>
           </div>

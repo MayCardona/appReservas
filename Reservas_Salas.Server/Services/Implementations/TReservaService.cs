@@ -127,9 +127,10 @@ namespace Reservas_Salas.Server.Services.Implementations
                             <li><b>Sala:</b> {sala.Salas}</li>
                             <li><b>Fecha:</b> {fecha}</li>
                             <li><b>Hora:</b> {horaInicio} - {horaFin}</li>
+                            <li><b>Motivo:</b> {reserva.Observaciones}.</li>
                             <li><b>Cargo:</b> {empleado.CargoNavigation?.Cargo}</li>
                         </ul>
-                        <p>Si no realizaste esta reserva, por favor comunícate con el área de sistemas.</p>
+                        <p>Si no realizaste esta reserva, por favor comunícate con el área de Tecnologías.</p>
                         <hr/>
                         <p style='font-size:12px;color:gray;'>Este mensaje fue generado automáticamente por el sistema de reservas de salas PROSEAR / INCREAR.</p>
                     </body>";
@@ -196,8 +197,9 @@ namespace Reservas_Salas.Server.Services.Implementations
                             <li><b>Sala:</b> {sala.Salas}</li>
                             <li><b>Fecha:</b> {fecha}</li>
                             <li><b>Hora:</b> {horaInicio} - {horaFin}</li>
+                            <li><b>Motivo:</b> {reservaCompleta.Observaciones}.</li>    
                         </ul>
-                        <p>Si no realizaste esta reserva, por favor comunícate con el área de sistemas.</p>
+                        <p>Si no realizaste esta reserva, por favor comunícate con el área de Tecnologías.</p>
                         <hr/>
                         <p style='font-size:12px;color:gray;'>Este mensaje fue generado automáticamente por el sistema de reservas de salas PROSEAR / INCREAR.</p>
                     </body>";
