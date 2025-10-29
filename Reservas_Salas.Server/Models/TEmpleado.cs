@@ -39,7 +39,7 @@ public partial class TEmpleado
     [StringLength(100)]
     [Unicode(false)]
     public string? TipoContrato { get; set; }
-    public bool? Activo { get; set; }
+    public bool Activo { get; set; }
 
     public int? Extension { get; set; }
 

@@ -76,6 +76,11 @@ export default function MisReservas() {
             const isActive = reservaActiva === r.idReserva;
             const cancelada = r.estado === 0;
 
+            const ahora = new Date();
+            const inicioReserva = new Date(r.fechaInicio);
+            const finReserva = new Date(r.fechaFin);
+            const reservaPasada = inicioReserva < ahora;
+
             return (
               <div key={r.idReserva} className="col-12 col-md-6 col-lg-4">
                 <div
@@ -95,9 +100,12 @@ export default function MisReservas() {
                     <div className="mb-2">
                       {cancelada ? (
                         <span className="badge bg-danger">Cancelada</span>
+                      ) : reservaPasada ? (
+                        <span className="badge bg-secondary">Pasada</span>
                       ) : (
                         <span className="badge bg-success">Activa</span>
                       )}
+
                     </div>
 
                     <p className="mb-1">
@@ -123,7 +131,7 @@ export default function MisReservas() {
                         isActive ? "show" : "hide"
                       }`}
                     >
-                      {!cancelada && (
+                      {!cancelada && !reservaPasada && (
                         <button
                           className="btn btn-outline-danger mt-2"
                           onClick={(e) => {
@@ -133,6 +141,11 @@ export default function MisReservas() {
                         >
                           <i className="bi bi-trash me-2"></i> Cancelar reserva
                         </button>
+                      )}
+                      {reservaPasada && !cancelada && (
+                        <p className="text-muted mt-2">
+                          <i className="bi bi-clock-history me-1"></i> No se puede cancelar una reserva pasada.
+                        </p>
                       )}
                     </div>
                   </div>

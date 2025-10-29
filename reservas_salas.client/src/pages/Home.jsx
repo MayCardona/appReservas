@@ -332,7 +332,7 @@ export default function Home() {
                   onClick={() => handleSeleccionBloque(bloque.horaInicio)}
                 >
                   {bloque.label}
-                  {bloque.ocupado && bloque.reserva && (
+                  {bloque.ocupado && bloque.reserva && !bloque.pasado && (
                     <div className="reserva-info">
                       <strong>{bloque.reserva.idEmpleadoNavigation.nombre} {bloque.reserva.idEmpleadoNavigation.apellido}</strong>
                       <small>{bloque.reserva.idEmpleadoNavigation.cargoNavigation.cargo}</small>

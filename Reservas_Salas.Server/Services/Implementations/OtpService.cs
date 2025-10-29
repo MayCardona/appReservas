@@ -31,6 +31,11 @@ namespace Reservas_Salas.Server.Services.Implementations
                 throw new Exception("Empleado no encontrado.");
             }
 
+            if (!empleado.Activo)
+            {
+                throw new Exception("Empleado Inactivo");
+            }
+
             if (string.IsNullOrEmpty(empleado.Email))
             {
                 throw new Exception("El empleado no tiene correo registrado.");
