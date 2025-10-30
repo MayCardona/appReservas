@@ -131,11 +131,51 @@ export default function Home() {
 
     setBloquesSeleccionados((prev) => {
       const existe = prev.some((h) => h.getTime() === hora.getTime());
-      return existe
-        ? prev.filter((h) => h.getTime() !== hora.getTime())
-        : [...prev, hora].sort((a, b) => a - b);
+
+      // 🔹 Si el bloque ya estaba seleccionado, lo quitamos
+      if (existe) {
+        return prev.filter((h) => h.getTime() !== hora.getTime());
+      }
+
+      // 🔹 Si no hay selección previa
+      if (prev.length === 0) return [hora];
+
+      const nuevaSeleccion = [...prev, hora].sort((a, b) => a - b);
+
+      // 🔹 Rellenar automáticamente los bloques intermedios
+      const bloquesCompletos = [];
+      for (let i = 0; i < nuevaSeleccion.length - 1; i++) {
+        const inicio = nuevaSeleccion[i];
+        const fin = nuevaSeleccion[i + 1];
+        bloquesCompletos.push(inicio);
+
+        // Rellenar entre ellos cada 30 minutos
+        let siguiente = new Date(inicio.getTime() + 30 * 60 * 1000);
+        while (siguiente < fin) {
+          // Solo añadimos si no está ocupado ni pasado
+          const bloqueIntermedio = bloques.find(
+            (b) => b.horaInicio.getTime() === siguiente.getTime()
+          );
+          if (bloqueIntermedio && !bloqueIntermedio.ocupado && !bloqueIntermedio.pasado) {
+            bloquesCompletos.push(siguiente);
+          }
+          siguiente = new Date(siguiente.getTime() + 30 * 60 * 1000);
+        }
+      }
+
+      // Añadimos el último bloque
+      bloquesCompletos.push(nuevaSeleccion[nuevaSeleccion.length - 1]);
+
+      // Quitamos duplicados
+      const unicos = [
+        ...new Map(bloquesCompletos.map((h) => [h.getTime(), h])).values(),
+      ];
+
+      return unicos.sort((a, b) => a - b);
     });
   };
+
+
 
   // 🔹 Crear reserva
   const handleReservar = async () => {

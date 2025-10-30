@@ -16,14 +16,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:57696",
-            "https://localhost:57696",
-            //"http://localhost:57697",
-            //"https://localhost:57697",
-            //"https://10.254.35.16:8085",
-            //"http://10.254.35.16:8085"
-            //"https://10.254.35.16:8086",
-            //"http://10.254.35.16:8086"
+        //"http://localhost:57696",
+        //"https://localhost:57696"
+        //"http://localhost:57697",
+        //"https://localhost:57697",
+            "https://10.254.35.16:8085",
+            "http://10.254.35.16:8085"
+        //"https://10.254.35.16:8086",
+        //"http://10.254.35.16:8086"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()

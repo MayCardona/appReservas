@@ -11,6 +11,7 @@ wwwroot\assets\index-BVxuqt0d.js
 wwwroot\assets\index-CE0DqgMe.js
 wwwroot\assets\index-CwoaMV5v.js
 wwwroot\assets\index-DGXxD0Cm.js
+wwwroot\assets\index-tipHFuXc.js
 wwwroot\assets\bootstrap-icons-mSm7cUeB.woff2
 wwwroot\assets\index-Vnuc5Sz2.css
 wwwroot\assets\bootstrap-icons-BeopsB42.woff
