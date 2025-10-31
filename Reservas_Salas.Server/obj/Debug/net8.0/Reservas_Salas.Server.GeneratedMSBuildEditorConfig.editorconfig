@@ -17,77 +17,77 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Reservas_Salas.Server
 build_property.RootNamespace = Reservas_Salas.Server
-build_property.ProjectDir = C:\Users\Maycol Cardona\Desktop\Reservas_Salas\Reservas_Salas.Server\
+build_property.ProjectDir = C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Maycol Cardona\Desktop\Reservas_Salas\Reservas_Salas.Server
+build_property.MSBuildProjectDirectory = C:\Users\Maycol Cardona\Music\appReservas\Reservas_Salas.Server
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TEmpleadoes/Create.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TEmpleadoes/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVEVtcGxlYWRvZXNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TEmpleadoes/Delete.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TEmpleadoes/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVEVtcGxlYWRvZXNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TEmpleadoes/Details.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TEmpleadoes/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVEVtcGxlYWRvZXNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TEmpleadoes/Edit.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TEmpleadoes/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVEVtcGxlYWRvZXNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TEmpleadoes/Index.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TEmpleadoes/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVEVtcGxlYWRvZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TReservas/Create.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TReservas/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFJlc2VydmFzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TReservas/Delete.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TReservas/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFJlc2VydmFzXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TReservas/Details.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TReservas/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFJlc2VydmFzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TReservas/Edit.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TReservas/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFJlc2VydmFzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TReservas/Index.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TReservas/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFJlc2VydmFzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TSalas/Create.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TSalas/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFNhbGFzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TSalas/Delete.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TSalas/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFNhbGFzXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TSalas/Details.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TSalas/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFNhbGFzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TSalas/Edit.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TSalas/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFNhbGFzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Maycol Cardona/Desktop/Reservas_Salas/Reservas_Salas.Server/Views/TSalas/Index.cshtml]
+[C:/Users/Maycol Cardona/Music/appReservas/Reservas_Salas.Server/Views/TSalas/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFNhbGFzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
