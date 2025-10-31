@@ -9,7 +9,7 @@ import "../assets/Reservas.css";
 export default function MisReservas() {
   const [reservas, setReservas] = useState([]);
   const [reservaActiva, setReservaActiva] = useState(null);
-  const { setReservasActualizadas } = useAuth();
+  const { notificarCambioReservas } = useAuth();
 
   useEffect(() => {
     const fetchReservas = async () => {
@@ -21,6 +21,7 @@ export default function MisReservas() {
 
         const data = await getReservasByEmpleado(user.id || user.IdEmpleado);
         setReservas(data);
+        
       } catch (err) {
         Swal.fire("Error", err.message, "error");
       }
@@ -53,7 +54,7 @@ export default function MisReservas() {
         )
       );
 
-      setReservasActualizadas(true);
+      notificarCambioReservas();
 
       setReservaActiva(null);
     } catch (err) {
@@ -75,6 +76,11 @@ export default function MisReservas() {
             const isActive = reservaActiva === r.idReserva;
             const cancelada = r.estado === 0;
 
+            const ahora = new Date();
+            const inicioReserva = new Date(r.fechaInicio);
+            const finReserva = new Date(r.fechaFin);
+            const reservaPasada = inicioReserva < ahora;
+
             return (
               <div key={r.idReserva} className="col-12 col-md-6 col-lg-4">
                 <div
@@ -85,7 +91,7 @@ export default function MisReservas() {
                     setReservaActiva(isActive ? null : r.idReserva)
                   }
                 >
-                  <div className="card-body text-light text-center">
+                  <div className="card-body text-dark text-center">
                     <h5 className="text-info fw-bold mb-2">
                       <i className="bi bi-door-open me-2"></i>
                       {r.nombreSala}
@@ -94,9 +100,12 @@ export default function MisReservas() {
                     <div className="mb-2">
                       {cancelada ? (
                         <span className="badge bg-danger">Cancelada</span>
+                      ) : reservaPasada ? (
+                        <span className="badge bg-secondary">Pasada</span>
                       ) : (
                         <span className="badge bg-success">Activa</span>
                       )}
+
                     </div>
 
                     <p className="mb-1">
@@ -113,13 +122,16 @@ export default function MisReservas() {
                         minute: "2-digit",
                       })}
                     </p>
+                    <h5>
+                      {r.observaciones}
+                    </h5>
 
                     <div
                       className={`expand-section ${
                         isActive ? "show" : "hide"
                       }`}
                     >
-                      {!cancelada && (
+                      {!cancelada && !reservaPasada && (
                         <button
                           className="btn btn-outline-danger mt-2"
                           onClick={(e) => {
@@ -129,6 +141,11 @@ export default function MisReservas() {
                         >
                           <i className="bi bi-trash me-2"></i> Cancelar reserva
                         </button>
+                      )}
+                      {reservaPasada && !cancelada && (
+                        <p className="text-muted mt-2">
+                          <i className="bi bi-clock-history me-1"></i> No se puede cancelar una reserva pasada.
+                        </p>
                       )}
                     </div>
                   </div>

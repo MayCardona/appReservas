@@ -1,79 +1,256 @@
-.home-wrapper {
-  background: #0f1115;
-  color: #e4e4e4;
+/* === Fondo general === */
+.home-wizard-wrapper {
   min-height: 100vh;
+  background: linear-gradient(135deg, #002f6c, #00509d, #0074d9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1rem;
+  color: #fff;
 }
 
-.panel {
-  background: #1a1d23;
-  border-radius: 1.5rem;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
-  border: 1px solid rgba(0, 255, 255, 0.05);
+/* === Línea de pasos === */
+.stepper-line-container {
+  position: relative;
+  width: 80%;
+  max-width: 700px;
+  height: 80px;
 }
 
-.list-group-item {
-  background: transparent;
-  color: #e4e4e4;
+.stepper-line-base {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.step-circle {
+  position: absolute;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  background: white;
+  color: #00509d;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.step-circle.active {
+  background: #00b4d8;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0, 180, 216, 0.6);
+}
+
+.step-label {
+  position: absolute;
+  top: 55px;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  transform: translateX(-40%);
+  color: white;
+}
+
+/* === Tarjeta del paso === */
+.card-step {
+  background-color: #ffffff;
+  color: #002f6c;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 700px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  margin-top: 6.5%;
+}
+
+.step-content h2 {
+  font-weight: 700;
+  color: #002f6c;
+  margin-bottom: 1.5rem;
+}
+
+/* === Botones === */
+.btn-next,
+.btn-prev,
+.btn-confirmar {
+  background-color: #0074d9;
+  color: white;
   border: none;
-  transition: 0.2s ease;
-}
-
-.list-group-item:hover {
-  background: rgba(0, 255, 255, 0.1);
-}
-
-.active-sala {
-  background: #00bfa6 !important;
-  color: #000 !important;
-  font-weight: 600;
+  padding: 0.75rem 2rem;
   border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
+.btn-next:hover,
+.btn-prev:hover,
+.btn-confirmar:hover {
+  background-color: #00509d;
+  transform: translateY(-2px);
+}
+
+.btn-prev {
+  background-color: #ccc;
+  color: #002f6c;
+}
+
+.btn-prev:hover {
+  background-color: #bbb;
+}
+
+/* === Grid de salas === */
+.salas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.sala-card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  color: #002f6c;
+}
+
+.sala-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+.sala-card.active {
+  border: 2px solid #00b4d8;
+  box-shadow: 0 0 10px rgba(0, 180, 216, 0.4);
+  background-color: #f0faff;
+}
+
+.sala-icon {
+  margin-bottom: 0.8rem;
+  color: #0074d9;
+}
+
+/* === Grid de horarios === */
 .schedule-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .slot {
-  background: #22252b;
-  padding: 1rem;
-  border-radius: 1rem;
+  background-color: #f7f9fc;
+  border-radius: 10px;
+  padding: 0.9rem;
   text-align: center;
-  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+  color: #002f6c;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Estados */
+.slot.disponible:hover {
+  background-color: #e8f3ff;
   cursor: pointer;
-  border: 1px solid rgba(0, 255, 255, 0.1);
 }
 
-.slot:hover {
-  transform: scale(1.03);
-}
-
-.slot.disponible {
-  background: rgba(0, 255, 100, 0.15);
-  border-color: #00ff99;
+.slot.seleccionado {
+  background-color: #00b4d8;
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 180, 216, 0.6);
 }
 
 .slot.ocupado {
-  background: rgba(255, 0, 0, 0.15);
-  border-color: #ff4444;
+  background-color: #d3e3f3;
+  color: #555;
   cursor: not-allowed;
 }
 
 .slot.pasado {
-  background: rgba(120, 120, 120, 0.15);
-  border-color: rgba(180, 180, 180, 0.3);
-  color: #777;
+  background-color: #eee;
+  color: #999;
   cursor: not-allowed;
-  opacity: 0.6;
 }
 
-.hora {
-  font-weight: 500;
+/* === Info de reserva en bloques ocupados === */
+.reserva-info {
+  margin-top: 0.4rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  padding: 0.3rem 0.4rem;
+  font-size: 0.85rem;
+  color: #002f6c;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.reserva-info strong {
   display: block;
+  font-size: 0.9rem;
+  color: #003a7a;
 }
 
-.estado {
-  font-size: 0.9rem;
-  opacity: 0.8;
+.reserva-info small {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* === Botón de cancelar para superusuarios === */
+.btn-cancelar {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #e63946;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancelar:hover {
+  background-color: #c5303a;
+}
+
+.btn-confirmar:disabled,
+.btn-confirmar.disabled-btn {
+  background: #b0c4de;
+  color: #f8f9fa;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* === Responsivo === */
+@media (max-width: 600px) {
+  .card-step {
+    padding: 1.5rem;
+  }
+
+  .step-label {
+    font-size: 0.8rem;
+    transform: translateX(-30%);
+  }
+
+  .sala-card h4 {
+    font-size: 1rem;
+  }
 }

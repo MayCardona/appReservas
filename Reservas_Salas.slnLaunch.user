@@ -4,8 +4,7 @@
     "Projects": [
       {
         "Path": "reservas_salas.client\\reservas_salas.client.esproj",
-        "Action": "Start",
-        "DebugTarget": "localhost (Edge)"
+        "Action": "Start"
       },
       {
         "Path": "Reservas_Salas.Server\\Reservas_Salas.Server.csproj",

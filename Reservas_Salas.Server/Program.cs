@@ -4,6 +4,7 @@ using Reservas_Salas.Server.Data;
 using Reservas_Salas.Server.Services;
 using Reservas_Salas.Server.Services.Implementations;
 using Reservas_Salas.Server.Services.Interfaces;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +16,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:5173",   // Vite (frontend React)
-            "https://localhost:5173",  // versión HTTPS por si acaso
-            "http://localhost:57696",  // tu antiguo frontend (opcional)
-            "https://localhost:57696"
+        "http://localhost:57696",
+        "https://localhost:57696",
+        //"http://localhost:57697",
+        //"https://localhost:57697",
+            "https://10.254.35.16:8085",
+            "http://10.254.35.16:8085"
+        //"https://10.254.35.16:8086",
+        //"http://10.254.35.16:8086"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
@@ -26,7 +31,15 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Evita los ciclos infinitos al serializar
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -42,6 +55,7 @@ builder.Services.AddScoped<ITSalaService, TSalaService>();
 builder.Services.AddScoped<ITEmpleadoService, TEmpleadoService>();
 builder.Services.AddScoped<ITReservaService, TReservaService>();
 builder.Services.AddScoped<IOtpService, OtpService>();
+builder.Services.AddScoped<ISendMailService, SendMailService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();

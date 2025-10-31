@@ -39,8 +39,7 @@ public partial class TEmpleado
     [StringLength(100)]
     [Unicode(false)]
     public string? TipoContrato { get; set; }
-
-    public bool? Activo { get; set; }
+    public bool Activo { get; set; }
 
     public int? Extension { get; set; }
 
@@ -52,7 +51,8 @@ public partial class TEmpleado
     [Unicode(false)]
     public string? Ciudad { get; set; }
 
-    public long? IdEquipo { get; set; }
+    [NotMapped]
+    public long IdEquipo { get; set; }
 
     [ForeignKey("Cargo")]
     [InverseProperty("TEmpleados")]

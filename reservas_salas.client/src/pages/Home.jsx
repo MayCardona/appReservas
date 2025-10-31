@@ -2,42 +2,53 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../assets/Home.css";
-
 import {
   getSalas,
   getReservasPorSalaYFecha,
   crearReserva,
+  eliminarReserva,
 } from "../api/apiClient";
 import { getSecureItem } from "../utils/secureStorage";
-import { useAuth } from "../context/AuthContext"; 
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { FaTv, FaUsers, FaDoorOpen } from "react-icons/fa";
 
 export default function Home() {
+  const user = getSecureItem("user");
+  // const esSuperUsuario = user?.idCargo === 30 || user?.idCargo === '30';
+  const esSuperUsuario = (user?.idCargo === 36 || user?.idCargo === '36')||(user?.idCargo === 62 || user?.idCargo === '62');
+  const navigate = useNavigate();
+
   const [salas, setSalas] = useState([]);
+  const [observacion, setObservacion] = useState('');
   const [salaSeleccionada, setSalaSeleccionada] = useState(null);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(
     new Date().toISOString().split("T")[0]
   );
   const [reservas, setReservas] = useState([]);
+  const [bloquesSeleccionados, setBloquesSeleccionados] = useState([]);
+  const [paso, setPaso] = useState(1);
+  const [loadingReserva, setLoadingReserva] = useState(false);
+
 
   const { reservasActualizadas, setReservasActualizadas } = useAuth();
 
-  //Cargar salas
+  // 🔹 Cargar salas
   useEffect(() => {
     const cargarSalas = async () => {
       try {
         const data = await getSalas();
         setSalas(data);
       } catch (err) {
-        console.error("Error al cargar salas:", err?.message || err);
+        console.error("Error al cargar salas:", err);
       }
     };
     cargarSalas();
   }, []);
 
-  //Cargar reservas según sala y fecha seleccionadas
+  // 🔹 Cargar reservas por sala y fecha
   useEffect(() => {
-    if (!salaSeleccionada || salaSeleccionada === "null") return;
-
+    if (!salaSeleccionada) return;
     const cargarReservas = async () => {
       try {
         const data = await getReservasPorSalaYFecha(
@@ -46,53 +57,43 @@ export default function Home() {
         );
         setReservas(data);
       } catch (err) {
-        console.error(
-          `Error al obtener reservas para sala ${salaSeleccionada} y fecha ${fechaSeleccionada}:`,
-          err?.message || err
-        );
+        console.error("Error al cargar reservas:", err);
       }
     };
-
     cargarReservas();
   }, [salaSeleccionada, fechaSeleccionada]);
 
-  // Escuchar si se canceló una reserva en MisReservas
+  // 🔹 Refrescar reservas globales
   useEffect(() => {
-    if (reservasActualizadas) {
-      const actualizarReservas = async () => {
-        if (salaSeleccionada) {
-          try {
-            const data = await getReservasPorSalaYFecha(
-              salaSeleccionada,
-              fechaSeleccionada
-            );
-            setReservas(data);
-          } catch (error) {
-            console.error("Error al refrescar reservas:", error);
-          }
-        }
+    if (reservasActualizadas && salaSeleccionada) {
+      (async () => {
+        const data = await getReservasPorSalaYFecha(
+          salaSeleccionada,
+          fechaSeleccionada
+        );
+        setReservas(data);
         setReservasActualizadas(false);
-      };
-
-      actualizarReservas();
+      })();
     }
   }, [reservasActualizadas]);
 
-  // Generar bloques de horarios (08:00 - 18:00)
+  // 🔹 Generar bloques horarios
   const generarBloques = () => {
     const bloques = [];
     const ahora = new Date();
 
-    for (let hora = 8; hora < 18; hora++) {
-      const inicio = new Date(
-        `${fechaSeleccionada}T${hora.toString().padStart(2, "0")}:00:00`
-      );
-      const fin = new Date(inicio.getTime() + 60 * 60 * 1000);
-
-      const ocupado = reservas.some((r) => {
+    for (let hora = 7; hora < 18; hora += 0.5) {
+      const horaEntera = Math.floor(hora);
+      const minutos = hora % 1 === 0 ? "00" : "30";
+      const inicio = new Date(`${fechaSeleccionada}T${horaEntera
+        .toString()
+        .padStart(2, "0")}:${minutos}:00`);
+      const fin = new Date(inicio.getTime() + 30 * 60 * 1000);
+      
+      const reservaBloque = reservas.find((r) => {
+        if (r.estado === 0) return false;
         const fi = new Date(r.fechaInicio);
         const ff = new Date(r.fechaFin);
-
         return (
           fi.toDateString() === inicio.toDateString() &&
           inicio < ff &&
@@ -100,167 +101,378 @@ export default function Home() {
         );
       });
 
+      const ocupado = !!reservaBloque;
       const pasado = inicio < ahora;
 
       bloques.push({
-        label: `${hora.toString().padStart(2, "0")}:00 — ${(hora + 1)
-          .toString()
-          .padStart(2, "0")}:00`,
+        label: `${inicio.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })} — ${fin.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`,
+        horaInicio: inicio,
         ocupado,
         pasado,
+        reserva: reservaBloque || null,
       });
+      
     }
-
     return bloques;
   };
 
-  //Crear reserva
-  const handleReservar = async (horaInicio) => {
+  const bloques = generarBloques();
+
+  // 🔹 Seleccionar bloque
+  const handleSeleccionBloque = (hora) => {
+    const bloque = bloques.find((b) => b.horaInicio.getTime() === hora.getTime());
+    if (!bloque || bloque.ocupado || bloque.pasado) return;
+
+    setBloquesSeleccionados((prev) => {
+      const existe = prev.some((h) => h.getTime() === hora.getTime());
+
+      // 🔹 Si el bloque ya estaba seleccionado, lo quitamos
+      if (existe) {
+        return prev.filter((h) => h.getTime() !== hora.getTime());
+      }
+
+      // 🔹 Si no hay selección previa
+      if (prev.length === 0) return [hora];
+
+      const nuevaSeleccion = [...prev, hora].sort((a, b) => a - b);
+
+      // 🔹 Rellenar automáticamente los bloques intermedios
+      const bloquesCompletos = [];
+      for (let i = 0; i < nuevaSeleccion.length - 1; i++) {
+        const inicio = nuevaSeleccion[i];
+        const fin = nuevaSeleccion[i + 1];
+        bloquesCompletos.push(inicio);
+
+        // Rellenar entre ellos cada 30 minutos
+        let siguiente = new Date(inicio.getTime() + 30 * 60 * 1000);
+        while (siguiente < fin) {
+          // Solo añadimos si no está ocupado ni pasado
+          const bloqueIntermedio = bloques.find(
+            (b) => b.horaInicio.getTime() === siguiente.getTime()
+          );
+          if (bloqueIntermedio && !bloqueIntermedio.ocupado && !bloqueIntermedio.pasado) {
+            bloquesCompletos.push(siguiente);
+          }
+          siguiente = new Date(siguiente.getTime() + 30 * 60 * 1000);
+        }
+      }
+
+      // Añadimos el último bloque
+      bloquesCompletos.push(nuevaSeleccion[nuevaSeleccion.length - 1]);
+
+      // Quitamos duplicados
+      const unicos = [
+        ...new Map(bloquesCompletos.map((h) => [h.getTime(), h])).values(),
+      ];
+
+      return unicos.sort((a, b) => a - b);
+    });
+  };
+
+
+
+  // 🔹 Crear reserva
+  const handleReservar = async () => {
     if (!salaSeleccionada)
-      return Swal.fire("Selecciona una sala primero", "", "warning");
+      return Swal.fire("Selecciona una sala", "", "warning");
+    if (bloquesSeleccionados.length === 0)
+      return Swal.fire("Selecciona al menos un bloque", "", "warning");
 
-    const fechaInicioLocal = `${fechaSeleccionada}T${horaInicio}:00`;
-    const ahora = new Date();
-
-    if (new Date(fechaInicioLocal) < ahora) {
-      return Swal.fire("No puedes reservar un horario pasado", "", "error");
-    }
-
-    const user = getSecureItem("user");
-    if (!user) return Swal.fire("Usuario no autenticado", "", "error");
+    const bloquesOrdenados = [...bloquesSeleccionados].sort((a, b) => a - b);
+    const fechaInicio = bloquesOrdenados[0];
+    const fechaFin = new Date(
+      bloquesOrdenados[bloquesOrdenados.length - 1].getTime() + 30 * 60 * 1000
+    );
 
     const idEmpleado = user.id || user.IdEmpleado || user.Id;
-    if (!idEmpleado)
-      return Swal.fire("Falta el ID de empleado", "", "error");
-
     const salaNombre =
-      salas.find((s) => s.idSala === salaSeleccionada)?.salas ||
-      salaSeleccionada;
+      salas.find((s) => s.idSala === salaSeleccionada)?.salas || "Sala";
+    const observaciones = observacion;
 
     const confirm = await Swal.fire({
-      title: "¿Confirmar reserva?",
-      text: `Sala ${salaNombre} a las ${horaInicio}`,
+      title: "Confirmar reserva",
+      text: `Sala ${salaNombre} desde ${fechaInicio.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })} hasta ${fechaFin.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Sí, reservar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#0033A0",
-      background: "#1a1d23",
-      color: "#e4e4e4",
     });
 
     if (!confirm.isConfirmed) return;
 
     try {
+      setLoadingReserva(true);
+
+      // Ajuste de zona horaria
+
+      const tzOffset = fechaInicio.getTimezoneOffset() * 60000;
+      const formatoLocal = (fecha) =>
+        new Date(fecha.getTime() - tzOffset).toISOString().slice(0, 19);
+
       const result = await crearReserva({
         idSala: salaSeleccionada,
         idEmpleado,
-        fechaInicio: fechaInicioLocal,
+        fechaInicio: formatoLocal(fechaInicio),
+        fechaFin: formatoLocal(fechaFin),
+        Estado: 1,
+        Observaciones: observaciones,
       });
 
       if (result.success) {
         await Swal.fire("Reserva creada correctamente", "", "success");
-
-        // Recargar reservas actualizadas
-        const nuevasReservas = await getReservasPorSalaYFecha(
-          salaSeleccionada,
-          fechaSeleccionada
-        );
-        setReservas(nuevasReservas);
+        setBloquesSeleccionados([]);
+        setPaso(4);
+        navigate("/reservas");
       } else {
-        await Swal.fire(
-          "Error al crear reserva",
-          result.message || "Ocurrió un error desconocido",
-          "error"
-        );
+        Swal.fire("Error", result.message, "error");
       }
     } catch (error) {
       console.error("Error en handleReservar:", error);
-      await Swal.fire("Error inesperado", error.message || "", "error");
+      Swal.fire("Error inesperado", error.message, "error");
+    }finally {
+      setLoadingReserva(false);
     }
   };
 
+  // 🔹 Cancelar reserva
+  const handleCancelarReserva = async (idReserva) => {
+    const confirm = await Swal.fire({
+      title: "¿Cancelar esta reserva?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No",
+      confirmButtonColor: "#d33",
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const result = await eliminarReserva(idReserva);
+      if (result.success) {
+        await Swal.fire("Reserva cancelada", "", "success");
+        const nuevas = await getReservasPorSalaYFecha(
+          salaSeleccionada,
+          fechaSeleccionada
+        );
+        setReservas(nuevas);
+      } else {
+        Swal.fire("Error", result.message, "error");
+      }
+    } catch (error) {
+      console.error("Error al cancelar reserva:", error);
+      Swal.fire("Error inesperado", error.message, "error");
+    }
+  };
+
+  // 🔹 Render principal (wizard)
   return (
-    <div className="home-wrapper container-fluid py-4 px-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="display-6 fw-bold text-info">ReservApp Dashboard</h1>
-        <input
-          type="date"
-          className="form-control w-auto bg-dark text-light border-info"
-          value={fechaSeleccionada}
-          onChange={(e) => setFechaSeleccionada(e.target.value)}
-        />
+    <div className="home-wizard-wrapper">
+      {/* Línea de progreso */}
+      <div className="stepper-line-container mb-5">
+        <div className="stepper-line-base"></div>
+        {["Fecha", "Sala", "Horario", "Confirmar"].map((etiqueta, i) => (
+          <div
+            key={i}
+            className={`step-circle ${paso >= i + 1 ? "active" : ""}`}
+            style={{ left: `${i * 33}%` }}
+          >
+            {i + 1}
+            <span className="step-label">{etiqueta}</span>
+          </div>
+        ))}
       </div>
 
-      <div className="row">
-        {/* Panel izquierdo - Salas */}
-        <div className="col-md-3">
-          <div className="panel p-3 mb-4">
-            <h5 className="mb-3 text-info">Salas disponibles</h5>
-            <ul className="list-group bg-dark rounded">
-              {salas.map((s) => (
-                <li
-                  key={s.idSala}
-                  className={`list-group-item list-group-item-action ${
-                    salaSeleccionada === s.idSala ? "active-sala" : ""
-                  }`}
-                  onClick={() => setSalaSeleccionada(s.idSala)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <i className="bi bi-door-open me-2"></i> {s.salas}
-                </li>
-              ))}
-            </ul>
+      {/* Card principal */}
+      <div className="card-step">
+        {paso === 1 && (
+          <div className="step-content">
+            <h2>Selecciona la fecha</h2>
+            <input
+              type="date"
+              className="form-control"
+              value={fechaSeleccionada}
+              onChange={(e) => setFechaSeleccionada(e.target.value)}
+            />
+            <button
+              className="btn-next mt-4"
+              onClick={() => setPaso(2)}
+              disabled={!fechaSeleccionada}
+            >
+              Siguiente
+            </button>
           </div>
-        </div>
+        )}
 
-        {/* Panel derecho - Horarios */}
-        <div className="col-md-9">
-          <div className="panel p-4">
-            <h4 className="text-center text-light text-info mb-4">
-              {salaSeleccionada
-                ? `Disponibilidad - ${
-                    salas.find((s) => s.idSala === salaSeleccionada)?.salas
-                  }`
-                : "Selecciona una sala"}
-            </h4>
-
-            <div className="schedule-grid text-light">
-              {salaSeleccionada ? (
-                generarBloques().map((b, i) => (
-                  <div
-                    key={i}
-                    className={`slot ${
-                      b.ocupado
-                        ? "ocupado"
-                        : b.pasado
-                        ? "pasado"
-                        : "disponible"
-                    }`}
-                    onClick={() =>
-                      !b.ocupado &&
-                      !b.pasado &&
-                      handleReservar(b.label.split(" — ")[0])
-                    }
-                  >
-                    <span className="hora">{b.label}</span>
-                    <span className="estado">
-                      {b.ocupado
-                        ? "Ocupado"
-                        : b.pasado
-                        ? "Pasado"
-                        : "Disponible"}
-                    </span>
+        {paso === 2 && (
+          <div className="step-content">
+            <h2>Selecciona la sala</h2>
+            <div className="salas-grid">
+              {salas.map((sala) => (
+                <div
+                  key={sala.idSala}
+                  className={`sala-card ${
+                    salaSeleccionada === sala.idSala ? "active" : ""
+                  }`}
+                  onClick={() => setSalaSeleccionada(sala.idSala)}
+                >
+                  <div className="sala-icon">
+                    {sala.idSala % 3 === 0 ? (
+                      <FaDoorOpen size={28} />
+                    ) : sala.idSala % 2 === 0 ? (
+                      <FaUsers size={28} />
+                    ) : (
+                      <FaTv size={28} />
+                    )}
                   </div>
-                ))
-              ) : (
-                <p className="text-center text-muted">
-                  Selecciona una sala para ver su horario
-                </p>
-              )}
+                  <h4>{sala.salas}</h4>
+                </div>
+              ))}
+            </div>
+
+            <div className="d-flex justify-content-between mt-4">
+              <button className="btn-prev" onClick={() => setPaso(1)}>
+                Atrás
+              </button>
+              <button
+                className="btn-next"
+                onClick={() => setPaso(3)}
+                disabled={!salaSeleccionada}
+              >
+                Siguiente
+              </button>
             </div>
           </div>
-        </div>
+        )}
+
+        {paso === 3 && (
+          <div className="step-content">
+            <h2>Selecciona el horario</h2>
+            <div className="schedule-grid">
+              {bloques.map((bloque, index) => (
+                <div
+                  key={index}
+                  className={`slot ${
+                    bloque.pasado
+                      ? "pasado"
+                      : bloque.ocupado
+                      ? "ocupado"
+                      : bloquesSeleccionados.some(
+                          (b) => b.getTime() === bloque.horaInicio.getTime()
+                        )
+                      ? "seleccionado"
+                      : "disponible"
+                  }`}
+                  onClick={() => handleSeleccionBloque(bloque.horaInicio)}
+                >
+                  {bloque.label}
+                  {bloque.ocupado && bloque.reserva && (
+                    <div className="reserva-info">
+                      <strong>{bloque.reserva.idEmpleadoNavigation.nombre} {bloque.reserva.idEmpleadoNavigation.apellido}</strong>
+                      <small>{bloque.reserva.idEmpleadoNavigation.cargoNavigation.cargo}</small>
+                      <br />
+                      <small> <i><b>Motivo: </b></i>{bloque.reserva.observaciones}</small>
+                    </div>
+                  )}
+                  {esSuperUsuario && bloque.reserva && !bloque.pasado &&  (
+                    <button
+                      className="btn-cancelar"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCancelarReserva(bloque.reserva.idReserva);
+                      }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="d-flex justify-content-between mt-4">
+              <button className="btn-prev" onClick={() => setPaso(2)}>
+                Atrás
+              </button>
+              <button
+                className="btn-next"
+                onClick={() => setPaso(4)}
+                disabled={bloquesSeleccionados.length === 0}
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
+        )}
+
+        {paso === 4 && (
+          <div className="step-content">
+            <h2>Confirmar reserva</h2>
+            <p>
+              Sala:{" "}
+              <strong>
+                {salas.find((s) => s.idSala === salaSeleccionada)?.salas}
+              </strong>
+            </p>
+            <p>
+              Fecha: <strong>{fechaSeleccionada}</strong>
+            </p>
+            <p>
+              Horas seleccionadas:{" "}
+              <strong>
+                {bloquesSeleccionados
+                  .map((b) =>
+                    b.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  )
+                  .join(", ")}
+              </strong>
+            </p>
+            <div className="row align-items-center justify-content-center">
+              <div className="col-6">
+                <label htmlFor="observacion" className="col-form-label">Motivo de reserva:</label>
+                <input className="form-control" type="text" name="observacion" id="observacion" value={observacion} onChange={(e)=>setObservacion(e.target.value)} required/>
+              </div>
+            </div>
+
+            <div className="d-flex justify-content-between mt-4">
+              <button className="btn-prev" onClick={() => setPaso(3)}>
+                Atrás
+              </button>
+              <button
+                className={`btn-confirmar ${
+                  !observacion.trim() || loadingReserva ? "disabled-btn" : ""
+                }`}
+                onClick={handleReservar}
+                disabled={!observacion.trim() || loadingReserva}
+              >
+                {loadingReserva ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Reservando...
+                  </>
+                ) : (
+                  "Confirmar Reserva"
+                )}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

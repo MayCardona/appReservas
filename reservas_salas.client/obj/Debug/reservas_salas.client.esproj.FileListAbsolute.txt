@@ -1,1 +1,2 @@
-C:\Users\Maycol Cardona\Desktop\Reservas_Salas\reservas_salas.client\obj\Debug\reservas_salas.client.esproj.CoreCompileInputs.cache
+C:\Users\Maycol Cardona\Desktop\appReservas\reservas_salas.client\obj\Debug\reservas_salas.client.esproj.CoreCompileInputs.cache
+C:\Users\Maycol Cardona\Music\appReservas\reservas_salas.client\obj\Debug\reservas_salas.client.esproj.CoreCompileInputs.cache

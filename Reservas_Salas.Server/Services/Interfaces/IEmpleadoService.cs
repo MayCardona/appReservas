@@ -6,6 +6,7 @@ namespace Reservas_Salas.Server.Services.Interfaces
     {
         Task<IEnumerable<TEmpleado>> GetAllAsync();
         Task<TEmpleado?> GetByIdAsync(long id);
+        Task<TEmpleado?> GetByIdAndCargoAsync(long id);
         Task<TEmpleado?> UpdateAsync(long id, TEmpleado empleado);
     }
 }

@@ -8,5 +8,6 @@
         public long IdSala { get; set; }
         public string NombreSala { get; set; } = string.Empty;
         public int Estado {  get; set; }
+        public string Observaciones { get; set; }
     }
 }

@@ -4,6 +4,7 @@
     {
         Task<string>GenerateOtpAsync(long IdEmpleado);
         Task<bool>ValidateOtpAsync(long IdEmpleado,string CodeOtp);
-        Task<string> BringEmployeeNameAsync(long IdEmpleado);
+        Task<object> BringEmployeeInfoAsync(long IdEmpleado);
+        
     }
 }

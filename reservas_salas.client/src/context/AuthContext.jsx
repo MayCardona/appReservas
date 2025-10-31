@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => getSecureItem("user"));
-  const [reservasActualizadas, setReservasActualizadas] = useState(false); // 👈 NUEVO
+  const [reservasActualizadas, setReservasActualizadas] = useState(false); 
 
   const login = (userData) => {
     setUser(userData);
@@ -15,6 +15,10 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     removeSecureItem("user");
+  };
+
+  const notificarCambioReservas = () => {
+    setReservasActualizadas((prev) => !prev);
   };
 
   useEffect(() => {
@@ -31,7 +35,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         reservasActualizadas,     
-        setReservasActualizadas, 
+        notificarCambioReservas, 
       }}
     >
       {children}

@@ -49,27 +49,43 @@ namespace Reservas_Salas.Server.Controllers
         {
             try
             {
-                
-                await _otpService.ValidateOtpAsync(dto.IdEmpleado,dto.OtpCode);
-                return Ok(new
+
+                bool isValid = await _otpService.ValidateOtpAsync(dto.IdEmpleado, dto.OtpCode);
+
+                if (isValid)
                 {
-                    success = true,
-                    Message = "Codigo OTP validado correctamente"
-                });
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Código OTP validado correctamente."
+                    });
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Código OTP incorrecto o expirado."
+                    });
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = $"Error al validar el código OTP: {ex.Message}"
+                });
             }
         }
 
-        [HttpPost("bring-name")]
-        public async Task<IActionResult> BringEmployeeName([FromBody] OtpRequestDTO dto)
+        [HttpPost("bring-info")]
+        public async Task<IActionResult> BringEmployeeInfo([FromBody] OtpRequestDTO dto)
         {
             try
             {
-                var EmployeeName= await _otpService.BringEmployeeNameAsync(dto.IdEmpleado);
-                return Ok(EmployeeName);
+                var EmployeeInfo= await _otpService.BringEmployeeInfoAsync(dto.IdEmpleado);
+                return Ok(EmployeeInfo);
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);
