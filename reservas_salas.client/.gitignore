@@ -1,3 +1,59 @@
+
+#   .NET / Visual Studio
+
+## Archivos de usuario
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+## Carpetas generadas por VS
+.vs/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+TestResults/
+[Aa]pp_Data/
+_ReSharper*/
+*.resharper
+*.DotSettings.user
+*.dbmdl
+*.bak
+
+## Archivos de configuración locales
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+## Publicaciones y paquetes
+publish/
+*.publishsettings
+*.pubxml
+*.publish.xml
+*.azurePubxml
+*.dbproj.schemaview
+*.pfx
+*.snk
+*.exe
+*.dll
+*.cache
+*.pdb
+*.config
+*.zip
+*.7z
+
+## Otros
+*.tmp
+*.bak
+*.old
+*.orig
+*.log
+*.vspscc
+*.vssscc
+
+
+#   Node / React
+
 # Logs
 logs
 *.log
@@ -7,18 +63,44 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencias y builds
+node_modules/
+dist/
+build/
+dist-ssr/
+coverage/
 *.local
 
-# Editor directories and files
+# Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Directorios de IDE/editores
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+*.swp
 *.sw?
+
+
+#   Sistema / OS
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+
+
+
+*.iml
+*.class
+*.log
+*.pyc
+*.pyo
+*.pyd
+*.vsix
